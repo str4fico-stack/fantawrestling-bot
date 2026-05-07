@@ -9,7 +9,7 @@ from telegram.ext import (
 )
 
 # TOKEN TELEGRAM
-TOKEN = os.getenv("8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U")
+TOKEN = '8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U'
 
 # ADMIN TELEGRAM
 ADMIN_IDS = [
