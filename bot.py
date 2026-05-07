@@ -9,7 +9,15 @@ from telegram.ext import (
 )
 
 # TOKEN TELEGRAM
-TOKEN = os.getenv('8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U')
+TOKEN = os.getenv("8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U")
+
+# ADMIN TELEGRAM
+ADMIN_IDS = [
+
+    1621756331, # Ciro
+    5802394692, # Matteo
+    
+]
 
 # FILE CLASSIFICA
 CLASSIFICA_FILE = "classifica.json"
@@ -46,6 +54,11 @@ matches = {
     "2": {
         "nome": "Seth vs Punk",
         "domanda2": "Ci sarà sangue?"
+    },
+
+    "3": {
+        "nome": "MITB Match",
+        "domanda2": "Ci sarà cash-in?"
     }
 
 }
@@ -63,11 +76,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for match_id, dati in matches.items():
 
         testo += f'{match_id}. {dati["nome"]}\n'
+        testo += f'   Bonus: {dati["domanda2"]}\n\n'
 
-    testo += "\nCOME SCOMMETTERE:\n"
+    testo += "COME SCOMMETTERE:\n"
     testo += "/pronostico ID risposta1 risposta2 [bonus]\n\n"
 
-    testo += "Esempio:\n"
+    testo += "ESEMPIO:\n"
     testo += "/pronostico 1 Cody si bonus"
 
     await update.message.reply_text(testo)
@@ -103,6 +117,7 @@ async def pronostico(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(context.args) >= 4:
 
         if context.args[3].lower() == "bonus":
+
             bonus = True
 
     # CREA MATCH
@@ -118,21 +133,33 @@ async def pronostico(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     }
 
-    bonus_testo = ""
+    testo_bonus = ""
 
     if bonus:
-        bonus_testo = " 🎰 BONUS ATTIVO"
+
+        testo_bonus = "\n🎰 BONUS ATTIVO"
 
     await update.message.reply_text(
 
-        f'✅ Pronostico salvato!\n'
-        f'Match: {matches[match_id]["nome"]}\n'
-        f'{bonus_testo}'
+        f'✅ Pronostico salvato!\n\n'
+        f'Match: {matches[match_id]["nome"]}'
+        f'{testo_bonus}'
 
     )
 
 # RISULTATO MATCH
 async def risultato(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    # CONTROLLO ADMIN
+    utente_id = update.effective_user.id
+
+    if utente_id not in ADMIN_IDS:
+
+        await update.message.reply_text(
+            '❌ Solo gli admin possono inserire risultati.'
+        )
+
+        return
 
     if len(context.args) < 3:
 
@@ -185,9 +212,11 @@ async def risultato(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         # 1 punto per risposta corretta
         if corretta1:
+
             punti += 1
 
         if corretta2:
+
             punti += 1
 
         # BONUS
@@ -216,9 +245,10 @@ async def risultato(update: Update, context: ContextTypes.DEFAULT_TYPE):
         bonus_testo = ""
 
         if dati["bonus"]:
+
             bonus_testo = " 🎰"
 
-        testo += f'{utente}: +{punti}{bonus_testo}\n'
+        testo += f'{utente}: +{punti} punti{bonus_testo}\n'
 
     await update.message.reply_text(testo)
 
@@ -253,6 +283,17 @@ async def classifica_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # RESET CLASSIFICA
 async def reset_classifica(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    # CONTROLLO ADMIN
+    utente_id = update.effective_user.id
+
+    if utente_id not in ADMIN_IDS:
+
+        await update.message.reply_text(
+            '❌ Solo gli admin possono resettare.'
+        )
+
+        return
 
     global classifica
 
