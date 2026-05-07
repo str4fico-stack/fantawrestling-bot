@@ -12,10 +12,11 @@ from telegram.ext import (
 TOKEN = '8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U'
 
 # ADMIN TELEGRAM
+# SOSTITUISCI CON IL TUO ID TELEGRAM
 ADMIN_IDS = [
 
-    1621756331, # Ciro
-    5802394692, # Matteo
+    5802394692  #Matteo
+    1621756331  #Ciro
 
 ]
 
@@ -48,16 +49,19 @@ matches = {
 
     "1": {
         "nome": "Cody vs Roman",
+        "domanda1": "Chi vince?",
         "domanda2": "Ci sarà interferenza?"
     },
 
     "2": {
         "nome": "Seth vs Punk",
+        "domanda1": "Chi vince?",
         "domanda2": "Ci sarà sangue?"
     },
 
     "3": {
         "nome": "MITB Match",
+        "domanda1": "Chi vince?",
         "domanda2": "Ci sarà cash-in?"
     }
 
@@ -76,13 +80,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for match_id, dati in matches.items():
 
         testo += f'{match_id}. {dati["nome"]}\n'
-        testo += f'   Bonus: {dati["domanda2"]}\n\n'
+        testo += f'   1️⃣ {dati["domanda1"]}\n'
+        testo += f'   2️⃣ {dati["domanda2"]}\n\n'
 
-    testo += "COME SCOMMETTERE:\n"
-    testo += "/pronostico ID risposta1 risposta2 [bonus]\n\n"
+    testo += "COME SCOMMETTERE:\n\n"
+
+    testo += "/pronostico ID risposta1 risposta2 bonus si/no\n\n"
 
     testo += "ESEMPIO:\n"
-    testo += "/pronostico 1 Cody si bonus"
+    testo += "/pronostico 1 Cody si bonus si"
 
     await update.message.reply_text(testo)
 
@@ -91,10 +97,10 @@ async def pronostico(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     utente = update.effective_user.first_name
 
-    if len(context.args) < 3:
+    if len(context.args) < 5:
 
         await update.message.reply_text(
-            '❌ Usa:\n/pronostico ID risposta1 risposta2 [bonus]'
+            '❌ Usa:\n/pronostico ID risposta1 risposta2 bonus si/no'
         )
 
         return
@@ -112,13 +118,14 @@ async def pronostico(update: Update, context: ContextTypes.DEFAULT_TYPE):
     risposta1 = context.args[1]
     risposta2 = context.args[2]
 
+    # BONUS SI/NO
+    bonus_attivazione = context.args[4].lower()
+
     bonus = False
 
-    if len(context.args) >= 4:
+    if bonus_attivazione == "si":
 
-        if context.args[3].lower() == "bonus":
-
-            bonus = True
+        bonus = True
 
     # CREA MATCH
     if match_id not in pronostici:
@@ -133,16 +140,18 @@ async def pronostico(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     }
 
-    testo_bonus = ""
+    testo_bonus = "❌ BONUS NON ATTIVO"
 
     if bonus:
 
-        testo_bonus = "\n🎰 BONUS ATTIVO"
+        testo_bonus = "🎰 BONUS ATTIVO"
 
     await update.message.reply_text(
 
         f'✅ Pronostico salvato!\n\n'
-        f'Match: {matches[match_id]["nome"]}'
+        f'Match: {matches[match_id]["nome"]}\n'
+        f'1️⃣ {risposta1}\n'
+        f'2️⃣ {risposta2}\n'
         f'{testo_bonus}'
 
     )
@@ -222,11 +231,12 @@ async def risultato(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # BONUS
         if dati["bonus"]:
 
-            # entrambe corrette
+            # SE ENTRAMBE CORRETTE
             if corretta1 and corretta2:
 
                 punti *= 2
 
+            # SE UNA SBAGLIATA
             else:
 
                 punti = 0
