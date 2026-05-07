@@ -16,7 +16,7 @@ ADMIN_IDS = [
 
     1621756331, # Ciro
     5802394692, # Matteo
-    
+
 ]
 
 # FILE CLASSIFICA
