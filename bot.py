@@ -21,8 +21,10 @@ from telegram.ext import (
 TOKEN = '8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U'
 
 ADMIN_IDS = [
+
     5802394692,  #Matteo
     1621756331  #Ciro
+    
 ]
 
 CARDS_FILE = "cards.json"
