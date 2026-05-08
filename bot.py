@@ -1,9 +1,6 @@
-
 import json
 import os
-
 from datetime import datetime
-from zoneinfo import ZoneInfo
 
 from telegram import (
     Update,
@@ -27,7 +24,6 @@ ADMIN_IDS = [
     5802394692,  #Matteo
     1621756331  #Ciro
 ]
-
 
 CARDS_FILE = "cards.json"
 CLASSIFICA_FILE = "classifica.json"
@@ -93,19 +89,19 @@ async def fantawrestling(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = []
 
-    now = datetime.now(ZoneInfo("Europe/Rome"))
+    now = datetime.now()
 
     for card_id, card in cards.items():
 
         apertura = datetime.strptime(
-    card["apertura"],
-    "%d/%m/%Y %H:%M"
-).replace(tzinfo=ZoneInfo("Europe/Rome"))
+            card["apertura"],
+            "%d/%m/%Y %H:%M"
+        )
 
         chiusura = datetime.strptime(
-    card["chiusura"],
-    "%d/%m/%Y %H:%M"
-).replace(tzinfo=ZoneInfo("Europe/Rome"))
+            card["chiusura"],
+            "%d/%m/%Y %H:%M"
+        )
 
         if apertura <= now <= chiusura:
 
@@ -505,6 +501,9 @@ async def set_answers2(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def lista_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
+
+
+
     testo = "📋 CARD PROGRAMMATE\n\n"
 
     if len(cards) == 0:
@@ -522,6 +521,7 @@ async def lista_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
             testo += f'🎮 Match: {len(card["match"])}\n\n'
 
     await update.message.reply_text(testo)
+
 
 # ==========================================
 # CLASSIFICA
