@@ -1,307 +1,531 @@
 import json
 import os
+from datetime import datetime
 
-from telegram import Update
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup
+)
+
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
-    ContextTypes
+    CallbackQueryHandler,
+    ContextTypes,
+    ConversationHandler,
+    MessageHandler,
+    filters
 )
 
-# TOKEN TELEGRAM
 TOKEN = '8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U'
 
-# ADMIN TELEGRAM
-# SOSTITUISCI CON IL TUO ID TELEGRAM
 ADMIN_IDS = [
-
     5802394692,  #Matteo
     1621756331  #Ciro
-
 ]
 
-# FILE CLASSIFICA
+CARDS_FILE = "cards.json"
 CLASSIFICA_FILE = "classifica.json"
+PRONOSTICI_FILE = "pronostici.json"
 
-# CARICA CLASSIFICA
-def carica_classifica():
+(
+    CARD_NAME,
+    NUM_MATCHES,
+    OPEN_TIME,
+    CLOSE_TIME,
+    MATCH_NAME,
+    QUESTION_1,
+    ANSWERS_1,
+    QUESTION_2,
+    ANSWERS_2
+) = range(9)
 
-    if os.path.exists(CLASSIFICA_FILE):
 
-        with open(CLASSIFICA_FILE, "r") as file:
+def load_json(file_name):
+
+    if os.path.exists(file_name):
+
+        with open(file_name, "r", encoding="utf-8") as file:
 
             return json.load(file)
 
     return {}
 
-# SALVA CLASSIFICA
-def salva_classifica():
 
-    with open(CLASSIFICA_FILE, "w") as file:
+def save_json(file_name, data):
 
-        json.dump(classifica, file)
+    with open(file_name, "w", encoding="utf-8") as file:
 
-# CLASSIFICA PERMANENTE
-classifica = carica_classifica()
+        json.dump(data, file, indent=4, ensure_ascii=False)
 
-# MATCH DISPONIBILI
-matches = {
 
-    "1": {
-        "nome": "Cody vs Roman",
-        "domanda1": "Chi vince?",
-        "domanda2": "Ci sarà interferenza?"
-    },
+cards = load_json(CARDS_FILE)
+classifica = load_json(CLASSIFICA_FILE)
+pronostici = load_json(PRONOSTICI_FILE)
 
-    "2": {
-        "nome": "Seth vs Punk",
-        "domanda1": "Chi vince?",
-        "domanda2": "Ci sarà sangue?"
-    },
 
-    "3": {
-        "nome": "MITB Match",
-        "domanda1": "Chi vince?",
-        "domanda2": "Ci sarà cash-in?"
-    }
+def is_admin(user_id):
 
-}
+    return user_id in ADMIN_IDS
 
-# PRONOSTICI
-pronostici = {}
 
+# ==========================================
 # START
+# ==========================================
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    testo = "🏆 FANTAWRESTLING WWE 🏆\n\n"
+    await update.message.reply_text(
+        "Usa /fantawrestling"
+    )
 
-    testo += "MATCH DISPONIBILI:\n\n"
 
-    for match_id, dati in matches.items():
+# ==========================================
+# FANTAWRESTLING MENU
+# ==========================================
 
-        testo += f'{match_id}. {dati["nome"]}\n'
-        testo += f'   1️⃣ {dati["domanda1"]}\n'
-        testo += f'   2️⃣ {dati["domanda2"]}\n\n'
+async def fantawrestling(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    testo += "COME SCOMMETTERE:\n\n"
+    keyboard = []
 
-    testo += "/pronostico ID risposta1 risposta2 bonus si/no\n\n"
+    now = datetime.now()
 
-    testo += "ESEMPIO:\n"
-    testo += "/pronostico 1 Cody si bonus si"
+    for card_id, card in cards.items():
 
-    await update.message.reply_text(testo)
+        apertura = datetime.strptime(
+            card["apertura"],
+            "%d/%m/%Y %H:%M"
+        )
 
-# PRONOSTICO
-async def pronostico(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        chiusura = datetime.strptime(
+            card["chiusura"],
+            "%d/%m/%Y %H:%M"
+        )
 
-    utente = update.effective_user.first_name
+        if apertura <= now <= chiusura:
 
-    if len(context.args) < 5:
+            keyboard.append([
+                InlineKeyboardButton(
+                    card["nome"],
+                    callback_data=f"card_{card_id}"
+                )
+            ])
+
+    if len(keyboard) == 0:
 
         await update.message.reply_text(
-            '❌ Usa:\n/pronostico ID risposta1 risposta2 bonus si/no'
+            "⛔ Nessuna card disponibile."
         )
 
         return
 
-    match_id = context.args[0]
+    reply_markup = InlineKeyboardMarkup(keyboard)
 
-    if match_id not in matches:
+    await update.message.reply_text(
+        "🏆 CARD DISPONIBILI",
+        reply_markup=reply_markup
+    )
 
-        await update.message.reply_text(
-            '❌ Match non esistente'
-        )
 
-        return
+# ==========================================
+# APRI CARD
+# ==========================================
 
-    risposta1 = context.args[1]
-    risposta2 = context.args[2]
+async def open_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    # BONUS SI/NO
-    bonus_attivazione = context.args[4].lower()
+    query = update.callback_query
 
-    bonus = False
+    await query.answer()
 
-    if bonus_attivazione == "si":
+    card_id = query.data.replace("card_", "")
 
-        bonus = True
+    context.user_data["current_card"] = card_id
 
-    # CREA MATCH
-    if match_id not in pronostici:
+    card = cards[card_id]
 
-        pronostici[match_id] = {}
+    testo = f'🏆 {card["nome"]}\n\n'
+    testo += "Seleziona un match:\n\n"
 
-    pronostici[match_id][utente] = {
+    keyboard = []
 
-        "risposta1": risposta1,
-        "risposta2": risposta2,
-        "bonus": bonus
+    for i, match in enumerate(card["match"]):
+
+        keyboard.append([
+            InlineKeyboardButton(
+                match["nome"],
+                callback_data=f"match_{card_id}_{i}"
+            )
+        ])
+
+    await query.message.reply_text(
+        testo,
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
+# ==========================================
+# APRI MATCH
+# ==========================================
+
+async def open_match(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    query = update.callback_query
+
+    await query.answer()
+
+    data = query.data.split("_")
+
+    card_id = data[1]
+    match_index = int(data[2])
+
+    card = cards[card_id]
+    match = card["match"][match_index]
+
+    context.user_data["match_index"] = match_index
+
+    testo = f'🔥 {match["nome"]}\n\n'
+    testo += f'1️⃣ {match["domanda1"]}\n\n'
+
+    keyboard = []
+
+    for risposta in match["risposte1"]:
+
+        keyboard.append([
+            InlineKeyboardButton(
+                risposta,
+                callback_data=f"r1_{risposta}"
+            )
+        ])
+
+    await query.message.reply_text(
+        testo,
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
+# ==========================================
+# RISPOSTA 1
+# ==========================================
+
+async def risposta1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    query = update.callback_query
+
+    await query.answer()
+
+    risposta = query.data.replace("r1_", "")
+
+    context.user_data["risposta1"] = risposta
+
+    card_id = context.user_data["current_card"]
+    match_index = context.user_data["match_index"]
+
+    match = cards[card_id]["match"][match_index]
+
+    testo = f'2️⃣ {match["domanda2"]}\n\n'
+
+    keyboard = []
+
+    for risposta in match["risposte2"]:
+
+        keyboard.append([
+            InlineKeyboardButton(
+                risposta,
+                callback_data=f"r2_{risposta}"
+            )
+        ])
+
+    await query.message.reply_text(
+        testo,
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
+# ==========================================
+# RISPOSTA 2
+# ==========================================
+
+async def risposta2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    query = update.callback_query
+
+    await query.answer()
+
+    risposta = query.data.replace("r2_", "")
+
+    context.user_data["risposta2"] = risposta
+
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                "🎰 ATTIVA BONUS",
+                callback_data="bonus_si"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                "❌ NO BONUS",
+                callback_data="bonus_no"
+            )
+        ]
+    ]
+
+    await query.message.reply_text(
+        "Vuoi attivare il bonus?",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+
+# ==========================================
+# BONUS
+# ==========================================
+
+async def bonus(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    query = update.callback_query
+
+    await query.answer()
+
+    bonus_attivo = query.data == "bonus_si"
+
+    user_id = str(query.from_user.id)
+    nome = query.from_user.first_name
+
+    card_id = context.user_data["current_card"]
+    match_index = str(context.user_data["match_index"])
+
+    # CREA UTENTE
+    if user_id not in pronostici:
+
+        pronostici[user_id] = {}
+
+    # CREA CARD
+    if card_id not in pronostici[user_id]:
+
+        pronostici[user_id][card_id] = {
+            "bonus_usato": False,
+            "match": {}
+        }
+
+    # CONTROLLO BONUS UNICO
+    if bonus_attivo:
+
+        if pronostici[user_id][card_id]["bonus_usato"]:
+
+            await query.message.reply_text(
+                "❌ Hai già usato il bonus in questa card."
+            )
+
+            return
+
+        pronostici[user_id][card_id]["bonus_usato"] = True
+
+    pronostici[user_id][card_id]["match"][match_index] = {
+
+        "utente": nome,
+        "risposta1": context.user_data["risposta1"],
+        "risposta2": context.user_data["risposta2"],
+        "bonus": bonus_attivo
 
     }
 
-    testo_bonus = "❌ BONUS NON ATTIVO"
+    save_json(PRONOSTICI_FILE, pronostici)
 
-    if bonus:
+    testo = "✅ Pronostico salvato!\n\n"
 
-        testo_bonus = "🎰 BONUS ATTIVO"
+    if bonus_attivo:
 
-    await update.message.reply_text(
-
-        f'✅ Pronostico salvato!\n\n'
-        f'Match: {matches[match_id]["nome"]}\n'
-        f'1️⃣ {risposta1}\n'
-        f'2️⃣ {risposta2}\n'
-        f'{testo_bonus}'
-
-    )
-
-# RISULTATO MATCH
-async def risultato(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    # CONTROLLO ADMIN
-    utente_id = update.effective_user.id
-
-    if utente_id not in ADMIN_IDS:
-
-        await update.message.reply_text(
-            '❌ Solo gli admin possono inserire risultati.'
-        )
-
-        return
-
-    if len(context.args) < 3:
-
-        await update.message.reply_text(
-            '❌ Usa:\n/risultato ID risposta1 risposta2'
-        )
-
-        return
-
-    match_id = context.args[0]
-
-    if match_id not in matches:
-
-        await update.message.reply_text(
-            '❌ Match non esistente'
-        )
-
-        return
-
-    risultato1 = context.args[1]
-    risultato2 = context.args[2]
-
-    testo = f'🏆 RISULTATI {matches[match_id]["nome"]}\n\n'
-
-    if match_id not in pronostici:
-
-        testo += "Nessun pronostico."
-
-        await update.message.reply_text(testo)
-
-        return
-
-    for utente, dati in pronostici[match_id].items():
-
-        punti = 0
-
-        corretta1 = (
-
-            dati["risposta1"].lower()
-            == risultato1.lower()
-
-        )
-
-        corretta2 = (
-
-            dati["risposta2"].lower()
-            == risultato2.lower()
-
-        )
-
-        # 1 punto per risposta corretta
-        if corretta1:
-
-            punti += 1
-
-        if corretta2:
-
-            punti += 1
-
-        # BONUS
-        if dati["bonus"]:
-
-            # SE ENTRAMBE CORRETTE
-            if corretta1 and corretta2:
-
-                punti *= 2
-
-            # SE UNA SBAGLIATA
-            else:
-
-                punti = 0
-
-        # CREA UTENTE IN CLASSIFICA
-        if utente not in classifica:
-
-            classifica[utente] = 0
-
-        # AGGIUNGI PUNTI
-        classifica[utente] += punti
-
-        # SALVA FILE
-        salva_classifica()
-
-        bonus_testo = ""
-
-        if dati["bonus"]:
-
-            bonus_testo = " 🎰"
-
-        testo += f'{utente}: +{punti} punti{bonus_testo}\n'
-
-    await update.message.reply_text(testo)
-
-# CLASSIFICA
-async def classifica_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    testo = '🏅 CLASSIFICA GENERALE\n\n'
-
-    if len(classifica) == 0:
-
-        testo += 'Nessun punto.'
+        testo += "🎰 BONUS ATTIVO"
 
     else:
 
-        classifica_ordinata = sorted(
+        testo += "❌ BONUS NON ATTIVO"
 
-            classifica.items(),
-            key=lambda x: x[1],
-            reverse=True
+    await query.message.reply_text(testo)
 
+
+# ==========================================
+# CREA CARD
+# ==========================================
+
+async def crea_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if not is_admin(update.effective_user.id):
+
+        return ConversationHandler.END
+
+    context.user_data["new_card"] = {
+        "match": []
+    }
+
+    await update.message.reply_text(
+        "📋 Nome della card?"
+    )
+
+    return CARD_NAME
+
+
+async def set_card_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["new_card"]["nome"] = update.message.text
+
+    await update.message.reply_text(
+        "🎮 Quanti match vuoi inserire?"
+    )
+
+    return NUM_MATCHES
+
+
+async def set_num_matches(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["num_matches"] = int(update.message.text)
+    context.user_data["current_match"] = 0
+
+    await update.message.reply_text(
+        "⏰ Data apertura scommesse?\nFormato: 15/05/2026 18:00"
+    )
+
+    return OPEN_TIME
+
+
+async def set_open_time(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["new_card"]["apertura"] = update.message.text
+
+    await update.message.reply_text(
+        "🔒 Data chiusura scommesse?"
+    )
+
+    return CLOSE_TIME
+
+
+async def set_close_time(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["new_card"]["chiusura"] = update.message.text
+
+    await update.message.reply_text(
+        "🏆 Nome Match 1?"
+    )
+
+    return MATCH_NAME
+
+
+async def set_match_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["temp_match"] = {
+        "nome": update.message.text
+    }
+
+    await update.message.reply_text(
+        "1️⃣ Prima domanda?"
+    )
+
+    return QUESTION_1
+
+
+async def set_question1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["temp_match"]["domanda1"] = update.message.text
+
+    await update.message.reply_text(
+        "Risposte domanda 1?\nFormato: Cody,Roman"
+    )
+
+    return ANSWERS_1
+
+
+async def set_answers1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    risposte = update.message.text.split(",")
+
+    context.user_data["temp_match"]["risposte1"] = risposte
+
+    await update.message.reply_text(
+        "2️⃣ Seconda domanda?"
+    )
+
+    return QUESTION_2
+
+
+async def set_question2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    context.user_data["temp_match"]["domanda2"] = update.message.text
+
+    await update.message.reply_text(
+        "Risposte domanda 2?\nFormato: Si,No"
+    )
+
+    return ANSWERS_2
+
+
+async def set_answers2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    risposte = update.message.text.split(",")
+
+    context.user_data["temp_match"]["risposte2"] = risposte
+
+    context.user_data["new_card"]["match"].append(
+        context.user_data["temp_match"]
+    )
+
+    context.user_data["current_match"] += 1
+
+    if context.user_data["current_match"] < context.user_data["num_matches"]:
+
+        numero = context.user_data["current_match"] + 1
+
+        await update.message.reply_text(
+            f'🏆 Nome Match {numero}?'
         )
 
-        posizione = 1
+        return MATCH_NAME
 
-        for utente, punti in classifica_ordinata:
+    # SALVA CARD
+    nuovo_id = str(len(cards) + 1)
 
-            testo += f'{posizione}. {utente} - {punti} punti\n'
+    cards[nuovo_id] = context.user_data["new_card"]
 
-            posizione += 1
+    save_json(CARDS_FILE, cards)
+
+    await update.message.reply_text(
+        "✅ Card creata correttamente!"
+    )
+
+    return ConversationHandler.END
+
+
+# ==========================================
+# CLASSIFICA
+# ==========================================
+
+async def classifica_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    testo = "🏅 CLASSIFICA\n\n"
+
+    classifica_ordinata = sorted(
+        classifica.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )
+
+    posizione = 1
+
+    for utente, punti in classifica_ordinata:
+
+        testo += f'{posizione}. {utente} - {punti} punti\n'
+        posizione += 1
 
     await update.message.reply_text(testo)
 
+
+# ==========================================
 # RESET CLASSIFICA
+# ==========================================
+
 async def reset_classifica(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    # CONTROLLO ADMIN
-    utente_id = update.effective_user.id
-
-    if utente_id not in ADMIN_IDS:
-
-        await update.message.reply_text(
-            '❌ Solo gli admin possono resettare.'
-        )
+    if not is_admin(update.effective_user.id):
 
         return
 
@@ -309,34 +533,47 @@ async def reset_classifica(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     classifica = {}
 
-    salva_classifica()
+    save_json(CLASSIFICA_FILE, classifica)
 
     await update.message.reply_text(
-        '🔄 Classifica resettata!'
+        "🔄 Classifica resettata"
     )
 
-# AVVIO BOT
+
+# ==========================================
+# APP
+# ==========================================
+
 app = ApplicationBuilder().token(TOKEN).build()
 
-app.add_handler(
-    CommandHandler('start', start)
+create_card_handler = ConversationHandler(
+    entry_points=[CommandHandler("crea_card", crea_card)],
+    states={
+        CARD_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_card_name)],
+        NUM_MATCHES: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_num_matches)],
+        OPEN_TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_open_time)],
+        CLOSE_TIME: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_close_time)],
+        MATCH_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_match_name)],
+        QUESTION_1: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_question1)],
+        ANSWERS_1: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_answers1)],
+        QUESTION_2: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_question2)],
+        ANSWERS_2: [MessageHandler(filters.TEXT & ~filters.COMMAND, set_answers2)]
+    },
+    fallbacks=[]
 )
 
-app.add_handler(
-    CommandHandler('pronostico', pronostico)
-)
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("fantawrestling", fantawrestling))
+app.add_handler(CommandHandler("classifica", classifica_cmd))
+app.add_handler(CommandHandler("reset_classifica", reset_classifica))
 
-app.add_handler(
-    CommandHandler('risultato', risultato)
-)
+app.add_handler(create_card_handler)
 
-app.add_handler(
-    CommandHandler('classifica', classifica_cmd)
-)
-
-app.add_handler(
-    CommandHandler('reset_classifica', reset_classifica)
-)
+app.add_handler(CallbackQueryHandler(open_card, pattern="^card_"))
+app.add_handler(CallbackQueryHandler(open_match, pattern="^match_"))
+app.add_handler(CallbackQueryHandler(risposta1, pattern="^r1_"))
+app.add_handler(CallbackQueryHandler(risposta2, pattern="^r2_"))
+app.add_handler(CallbackQueryHandler(bonus, pattern="^bonus_"))
 
 print("BOT ONLINE")
 
