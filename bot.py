@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from telegram import (
     Update,
@@ -91,19 +92,20 @@ async def fantawrestling(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = []
 
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Europe/Rome"))
+
 
     for card_id, card in cards.items():
 
         apertura = datetime.strptime(
-            card["apertura"],
-            "%d/%m/%Y %H:%M"
-        )
+    card["apertura"],
+    "%d/%m/%Y %H:%M"
+).replace(tzinfo=ZoneInfo("Europe/Rome"))
 
         chiusura = datetime.strptime(
-            card["chiusura"],
-            "%d/%m/%Y %H:%M"
-        )
+    card["chiusura"],
+    "%d/%m/%Y %H:%M"
+).replace(tzinfo=ZoneInfo("Europe/Rome"))
 
         if apertura <= now <= chiusura:
 
