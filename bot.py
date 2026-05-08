@@ -524,7 +524,59 @@ async def lista_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(testo)
 
+# ==========================================
+# ELIMINA CARD
+# ==========================================
 
+async def elimina_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    if not is_admin(update.effective_user.id):
+
+        await update.message.reply_text(
+            "❌ Solo admin."
+        )
+
+        return
+
+    if len(context.args) == 0:
+
+        await update.message.reply_text(
+            "❌ Usa:\n/elimina_card ID"
+        )
+
+        return
+
+    card_id = context.args[0]
+
+    if card_id not in cards:
+
+        await update.message.reply_text(
+            "❌ Card non trovata."
+        )
+
+        return
+
+    # ELIMINA CARD
+    del cards[card_id]
+
+    save_json(CARDS_FILE, cards)
+
+    # ELIMINA PRONOSTICI COLLEGATI
+    utenti_da_salvare = {}
+
+    for user_id, dati in pronostici.items():
+
+        if card_id in dati:
+
+            del dati[card_id]
+
+        utenti_da_salvare[user_id] = dati
+
+    save_json(PRONOSTICI_FILE, utenti_da_salvare)
+
+    await update.message.reply_text(
+        f'🗑 Card {card_id} eliminata.'
+    )
 # ==========================================
 # CLASSIFICA
 # ==========================================
@@ -596,6 +648,7 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("fantawrestling", fantawrestling))
 app.add_handler(CommandHandler("classifica", classifica_cmd))
 app.add_handler(CommandHandler("lista_card", lista_card))
+app.add_handler(CommandHandler("elimina_card", elimina_card))
 app.add_handler(CommandHandler("reset_classifica", reset_classifica))
 
 app.add_handler(create_card_handler)
