@@ -1,6 +1,7 @@
+
 import json
-import os
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from telegram import (
     Update,
@@ -18,11 +19,13 @@ from telegram.ext import (
     filters
 )
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = '8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U'
 
 ADMIN_IDS = [
-    123456789
+    5802394692,  #Matteo
+    1621756331  #Ciro
 ]
+
 
 CARDS_FILE = "cards.json"
 CLASSIFICA_FILE = "classifica.json"
@@ -88,19 +91,19 @@ async def fantawrestling(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = []
 
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Europe/Rome"))
 
     for card_id, card in cards.items():
 
         apertura = datetime.strptime(
-            card["apertura"],
-            "%d/%m/%Y %H:%M"
-        )
+    card["apertura"],
+    "%d/%m/%Y %H:%M"
+).replace(tzinfo=ZoneInfo("Europe/Rome"))
 
         chiusura = datetime.strptime(
-            card["chiusura"],
-            "%d/%m/%Y %H:%M"
-        )
+    card["chiusura"],
+    "%d/%m/%Y %H:%M"
+).replace(tzinfo=ZoneInfo("Europe/Rome"))
 
         if apertura <= now <= chiusura:
 
