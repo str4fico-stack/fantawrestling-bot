@@ -500,6 +500,7 @@ async def set_answers2(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ==========================================
 # LISTA CARD
 # ==========================================
+
 async def lista_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
@@ -647,7 +648,8 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("fantawrestling", fantawrestling))
 app.add_handler(CommandHandler("classifica", classifica_cmd))
 app.add_handler(CommandHandler("reset_classifica", reset_classifica))
-app.add_handler(CommandHandler("reset_classifica", reset_classifica))
+app.add_handler(CommandHandler("lista_card", lista_card))
+app.add_handler(CommandHandler("elimina_card", elimina_card))
 
 app.add_handler(create_card_handler)
 
