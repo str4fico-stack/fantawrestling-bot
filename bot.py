@@ -18,11 +18,10 @@ from telegram.ext import (
     filters
 )
 
-TOKEN = '8755768030:AAGK9YAsiqSQcQNjEeApR8F-95uyhuYtl2U'
+TOKEN = os.getenv("TOKEN")
 
 ADMIN_IDS = [
-    5802394692,  #Matteo
-    1621756331  #Ciro
+    123456789
 ]
 
 CARDS_FILE = "cards.json"
@@ -496,6 +495,30 @@ async def set_answers2(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # ==========================================
+# LISTA CARD
+# ==========================================
+
+async def lista_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    testo = "📋 CARD PROGRAMMATE\n\n"
+
+    if len(cards) == 0:
+
+        testo += "Nessuna card disponibile."
+
+    else:
+
+        for card_id, card in cards.items():
+
+            testo += f'ID: {card_id}\n'
+            testo += f'🏆 {card["nome"]}\n'
+            testo += f'⏰ Apertura: {card["apertura"]}\n'
+            testo += f'🔒 Chiusura: {card["chiusura"]}\n'
+            testo += f'🎮 Match: {len(card["match"])}\n\n'
+
+    await update.message.reply_text(testo)
+
+# ==========================================
 # CLASSIFICA
 # ==========================================
 
@@ -565,6 +588,7 @@ create_card_handler = ConversationHandler(
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("fantawrestling", fantawrestling))
 app.add_handler(CommandHandler("classifica", classifica_cmd))
+app.add_handler(CommandHandler("lista_card", lista_card))
 app.add_handler(CommandHandler("reset_classifica", reset_classifica))
 
 app.add_handler(create_card_handler)
