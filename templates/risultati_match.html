@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Risultati Match</title>
+
+</head>
+
+<body style="
+    background:#111;
+    color:white;
+    font-family:Arial;
+    padding:40px;
+">
+
+    <h1>
+        🏆 Risultati {{ match.nome }}
+    </h1>
+
+    <form method="POST">
+
+        <p>
+            Risultato 1
+        </p>
+
+        <input
+            type="text"
+            name="risultato1"
+            style="
+                width:100%;
+                padding:12px;
+                margin-bottom:20px;
+            "
+        >
+
+        <p>
+            Risultato 2
+        </p>
+
+        <input
+            type="text"
+            name="risultato2"
+            style="
+                width:100%;
+                padding:12px;
+                margin-bottom:20px;
+            "
+        >
+
+        <button type="submit" style="
+            background:crimson;
+            color:white;
+            border:none;
+            padding:14px 20px;
+            border-radius:10px;
+            cursor:pointer;
+        ">
+
+            SALVA RISULTATI
+
+        </button>
+
+    </form>
+
+</body>
+
+</html>

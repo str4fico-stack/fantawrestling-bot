@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Modifica Match</title>
+
+    <style>
+
+        body {
+
+            background: #111;
+            color: white;
+            font-family: Arial;
+            padding: 40px;
+        }
+
+        .box {
+
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h1 {
+
+            color: gold;
+            margin-bottom: 25px;
+        }
+
+        input {
+
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background: #2a2a2a;
+            color: white;
+            font-size: 15px;
+        }
+
+        button {
+
+            background: crimson;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button:hover {
+
+            background: red;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="box">
+
+        <h1>✏️ Modifica Match</h1>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="nome"
+                value="{{ match.nome }}"
+                placeholder="Nome Match"
+            >
+
+            <input
+                type="text"
+                name="domanda1"
+                value="{{ match.domanda1 }}"
+                placeholder="Domanda 1"
+            >
+
+            <input
+                type="text"
+                name="risposte1"
+                value="{{ match.risposte1 | join(',') }}"
+                placeholder="Risposte 1"
+            >
+
+            <input
+                type="text"
+                name="domanda2"
+                value="{{ match.domanda2 }}"
+                placeholder="Domanda 2"
+            >
+
+            <input
+                type="text"
+                name="risposte2"
+                value="{{ match.risposte2 | join(',') }}"
+                placeholder="Risposte 2"
+            >
+
+            <button type="submit">
+                💾 SALVA MODIFICHE
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

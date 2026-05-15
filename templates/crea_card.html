@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Crea Card</title>
+
+    <style>
+
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial;
+            padding: 30px;
+        }
+
+        .box {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: gold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            background: #2a2a2a;
+            color: white;
+        }
+
+        button {
+            background: crimson;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: red;
+        }
+
+        a {
+            color: gold;
+            text-decoration: none;
+        }
+        * {
+
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        } 
+        
+    </style>
+
+</head>
+
+<body>
+
+    <h1>➕ CREA NUOVA CARD</h1>
+
+    <div class="box">
+
+        <form method="POST">
+
+            <label>🏆 Nome Card</label>
+
+            <input type="text" name="nome">
+
+            <label>🕒 Apertura</label>
+
+            <input
+                type="text"
+                name="apertura"
+                placeholder="15/05/2026 18:00"
+            >
+
+            <label>🔒 Chiusura</label>
+
+            <input
+                type="text"
+                name="chiusura"
+                placeholder="15/05/2026 23:00"
+            >
+
+            <button type="submit">
+                CREA CARD
+            </button>
+
+        </form>
+
+    </div>
+
+    <br>
+
+    <a href="/">
+        ⬅ Torna alla Dashboard
+    </a>
+
+</body>
+
+</html>

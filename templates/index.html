@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Fantawrestling</title>
+
+    <style>
+
+        * {
+
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            background:
+            linear-gradient(
+                180deg,
+                #111,
+                #1a1a1a
+            );
+
+            color: white;
+
+            font-family: Arial;
+
+            min-height: 100vh;
+
+            padding: 20px;
+        }
+
+        .hero {
+
+            text-align: center;
+
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+
+            font-size: 60px;
+
+            color: gold;
+
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+
+            font-size: 20px;
+
+            color: #ccc;
+
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+        .btn {
+
+            background: crimson;
+
+            color: white;
+
+            border: none;
+
+            padding: 14px 22px;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .section {
+
+            margin-top: 50px;
+        }
+
+        .section h2 {
+
+            color: gold;
+
+            margin-bottom: 20px;
+        }
+
+        .box {
+
+            background: #1f1f1f;
+
+            padding: 20px;
+
+            border-radius: 16px;
+
+            margin-bottom: 15px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="hero">
+
+        <h1>
+            🏆 Fantawrestling
+        </h1>
+
+        <p>
+            Pronostica gli eventi WWE
+            e scala la classifica live.
+        </p>
+
+        <div class="buttons">
+
+            <a href="/user_login" class="btn">
+
+                🎮 Login
+
+            </a>
+
+            <a href="/register" class="btn">
+
+                👤 Registrati
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <h2>
+            🔥 Top Players
+        </h2>
+
+        {% for player in classifica %}
+
+            <div class="box">
+
+                {{ loop.index }}.
+                {{ player.username }}
+
+                - 🏆 {{ player.punti }} pt
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="section">
+
+        <h2>
+            📋 Eventi Attivi
+        </h2>
+
+        {% for card in cards %}
+
+            <div class="box">
+
+                <h3>
+                    {{ card.nome }}
+                </h3>
+
+                <p>
+                    🔒 Chiusura:
+                    {{ card.chiusura }}
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</body>
+
+</html>

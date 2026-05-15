@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Inserisci Risultati</title>
+
+    <style>
+
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial;
+            padding: 30px;
+        }
+
+        .box {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+        }
+
+        h1 {
+            color: gold;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+            background: #2a2a2a;
+            color: white;
+        }
+
+        button {
+            background: crimson;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>🏆 Inserisci Risultati</h1>
+
+    <div class="box">
+
+        <h2>{{ match.nome }}</h2>
+
+        <form method="POST">
+
+            <label>{{ match.domanda1 }}</label>
+
+            <select name="risultato1">
+
+                {% for risposta in match.risposte1 %}
+
+                    <option value="{{ risposta }}">
+                        {{ risposta }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <label>{{ match.domanda2 }}</label>
+
+            <select name="risultato2">
+
+                {% for risposta in match.risposte2 %}
+
+                    <option value="{{ risposta }}">
+                        {{ risposta }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                CALCOLA PUNTI
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

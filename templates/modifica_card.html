@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Modifica Card</title>
+
+    <style>
+
+        body {
+
+            background: #111;
+            color: white;
+            font-family: Arial;
+            padding: 40px;
+        }
+
+        .box {
+
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+        }
+
+        h1 {
+
+            color: gold;
+            margin-bottom: 25px;
+        }
+
+        input {
+
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: none;
+            background: #2a2a2a;
+            color: white;
+            font-size: 15px;
+        }
+
+        button {
+
+            background: crimson;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        button:hover {
+
+            background: red;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="box">
+
+        <h1>✏️ Modifica Card</h1>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="nome"
+                value="{{ card.nome }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="apertura"
+                value="{{ card.apertura }}"
+                required
+            >
+
+            <input
+                type="text"
+                name="chiusura"
+                value="{{ card.chiusura }}"
+                required
+            >
+
+            <button type="submit">
+                💾 SALVA MODIFICHE
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

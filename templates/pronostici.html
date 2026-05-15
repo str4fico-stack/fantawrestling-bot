@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Pronostici</title>
+
+</head>
+
+<body style="
+    background:#111;
+    color:white;
+    font-family:Arial;
+    padding:40px;
+">
+
+    <h1>
+        🎮 Pronostici {{ card.nome }}
+    </h1>
+
+    <form method="POST">
+
+        {% for match in card.match %}
+
+            <div style="
+                background:#1f1f1f;
+                padding:20px;
+                border-radius:15px;
+                margin-bottom:20px;
+            ">
+
+                <h2>
+                    {{ match.nome }}
+                </h2>
+
+                <p>
+                    Vincitore Match
+                </p>
+
+                <input
+                    type="text"
+                    name="risposta1_{{ match.id }}"
+                    placeholder="Scrivi pronostico"
+                    style="
+                        width:100%;
+                        padding:12px;
+                        margin-bottom:10px;
+                    "
+                >
+
+                <p>
+                    Evento speciale
+                </p>
+
+                <input
+                    type="text"
+                    name="risposta2_{{ match.id }}"
+                    placeholder="Scrivi pronostico"
+                    style="
+                        width:100%;
+                        padding:12px;
+                    "
+                >
+
+            </div>
+
+        {% endfor %}
+
+        <button type="submit" style="
+            background:crimson;
+            color:white;
+            border:none;
+            padding:14px 20px;
+            border-radius:10px;
+            cursor:pointer;
+        ">
+
+            SALVA PRONOSTICI
+
+        </button>
+
+    </form>
+
+</body>
+
+</html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard Utente</title>
+    
+<style>
+    .flash {
+
+        background: #1f1f1f;
+
+        border-left:
+        5px solid gold;
+
+        padding: 16px;
+
+        border-radius: 10px;
+
+        margin-bottom: 20px;
+
+        animation:
+        fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+
+        from {
+
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    * {
+
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+
+        background: #111;
+        color: white;
+        font-family: Arial;
+
+        padding: 20px;
+    }
+
+    .topbar {
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        margin-bottom: 30px;
+
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .title {
+
+        color: gold;
+        font-size: 32px;
+    }
+
+    .logout-btn {
+
+        background: crimson;
+        color: white;
+
+        border: none;
+
+        padding: 12px 16px;
+
+        border-radius: 10px;
+
+        cursor: pointer;
+    }
+
+    .section-title {
+
+        color: gold;
+
+        margin-top: 40px;
+        margin-bottom: 20px;
+
+        font-size: 26px;
+    }
+
+    .card {
+
+        background: #1f1f1f;
+
+        padding: 20px;
+
+        border-radius: 16px;
+
+        margin-bottom: 20px;
+
+        box-shadow:
+        0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .card h3 {
+
+        color: gold;
+
+        margin-bottom: 10px;
+    }
+
+    .card p {
+
+        margin-bottom: 8px;
+
+        color: #ddd;
+    }
+
+    .btn {
+
+        background: crimson;
+        color: white;
+
+        border: none;
+
+        padding: 12px 14px;
+
+        border-radius: 10px;
+
+        cursor: pointer;
+
+        margin-top: 10px;
+
+        width: 100%;
+    }
+
+    .rank {
+
+        background: #1f1f1f;
+
+        padding: 15px;
+
+        border-radius: 12px;
+
+        margin-bottom: 10px;
+
+        display: flex;
+        justify-content: space-between;
+    }
+
+    @media(max-width: 700px){
+
+        .title {
+
+            font-size: 24px;
+        }
+
+        .card {
+
+            padding: 16px;
+        }
+
+        .btn {
+
+            font-size: 15px;
+        }
+    }
+
+</style>
+
+</head>
+
+<body>
+    
+    {% with messages =
+    get_flashed_messages()[-1:] %}
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="flash">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+    
+    <div class="topbar">
+
+        <h1 class="title">
+            👋 {{ user.username }}
+        </h1>
+
+        <a href="/profilo">
+
+            <button class="logout-btn">
+
+            👤 Profilo
+
+            </button>
+
+        </a>
+
+        <a href="/user_logout">
+
+            <button class="logout-btn">
+                🚪 Logout
+            </button>
+
+        </a>
+
+    </div>
+
+    <h2 class="section-title">
+        📋 Cards Disponibili
+    </h2>
+
+    {% for card in cards %}
+
+        <div class="card">
+
+            <h3>
+                {{ card.nome }}
+            </h3>
+
+            <p>
+                🕒 Apertura:
+                {{ card.apertura }}
+            </p>
+
+            <p>
+                🔒 Chiusura:
+                {{ card.chiusura }}
+            </p>
+            
+            <p id="status-{{ card.id }}">
+
+                🟢 APERTA
+
+            </p>
+
+            <p id="countdown-{{ card.id }}">
+
+                ⏳ Calcolo countdown...
+
+            </p>
+
+            <a href="/pronostici/{{ card.id }}">
+
+                <button class="btn">
+                    🎮 PRONOSTICA
+                </button>
+
+            </a>
+
+        </div>
+
+    {% endfor %}
+
+    <h2 class="section-title">
+        🏆 Classifica Live
+    </h2>
+
+    {% for player in classifica %}
+
+        <div class="rank">
+
+            <span>
+                {{ loop.index }}.
+                {{ player.username }}
+            </span>
+
+            <span>
+                🔥 {{ player.punti }} pt
+            </span>
+
+        </div>
+
+    {% endfor %}
+        
+    <script>
+
+    {% for card in cards %}
+
+         const chiusura{{ card.id }} = new Date(
+            "{{ card.chiusura }}"
+        ).getTime();
+
+        const countdown{{ card.id }} = document.getElementById(
+            "countdown-{{ card.id }}"
+        );
+
+        setInterval(() => {
+
+            const now = new Date().getTime();
+
+            const distanza =
+            chiusura{{ card.id }} - now;
+
+            const status =
+            document.getElementById(
+                "status-{{ card.id }}"
+            );
+
+            if (distanza <= 0) {
+
+                countdown{{ card.id }}.innerHTML =
+                "🔴 Pronostici chiusi";
+
+                status.innerHTML =
+                "🔴 CHIUSA";
+
+                return;
+            }
+
+            if (distanza < 3600000) {
+
+                status.innerHTML =
+                "🟡 IN CHIUSURA";
+            }
+
+            else {
+
+                status.innerHTML =
+                "🟢 APERTA";
+            }
+
+            const giorni =
+            Math.floor(
+            distanza / (1000 * 60 * 60 * 24)
+            );
+
+            const ore =
+            Math.floor(
+                (distanza % (1000 * 60 * 60 * 24))
+                / (1000 * 60 * 60)
+            );
+
+            const minuti =
+            Math.floor(
+                (distanza % (1000 * 60 * 60))
+                / (1000 * 60)
+             );
+
+             countdown{{ card.id }}.innerHTML =
+
+            `⏳ ${giorni}g ${ore}h ${minuti}m`;
+
+        }, 1000);
+
+    {% endfor %}
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Profilo</title>
+
+    <style>
+
+        body {
+
+            background:#111;
+
+            color:white;
+
+            font-family:Arial;
+
+            padding:20px;
+        }
+
+        .box {
+
+            background:#1f1f1f;
+
+            padding:20px;
+
+            border-radius:16px;
+
+            margin-bottom:20px;
+        }
+
+        h1, h2 {
+
+            color:gold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>
+        👤 Profilo Giocatore
+    </h1>
+
+    <div class="box">
+
+        <h2>
+            {{ current_user.username }}
+        </h2>
+
+        <p>
+            🔥 Punti:
+            {{ punti_totali }}
+        </p>
+
+        <p>
+            🎮 Pronostici:
+            {{ totale_pronostici }}
+        </p>
+
+        <p>
+            🎯 Accuratezza:
+            {{ accuratezza }}%
+        </p>
+
+    </div>
+
+    <h2>
+        📋 Storico Pronostici
+    </h2>
+
+    {% for pronostico in pronostici %}
+
+        <div class="box">
+
+            <p>
+                Match:
+                {{ pronostico.match.nome }}
+            </p>
+
+            <p>
+                Risposta 1:
+                {{ pronostico.risposta1 }}
+            </p>
+
+            <p>
+                Risposta 2:
+                {{ pronostico.risposta2 }}
+            </p>
+
+            <p>
+                🔥 Punti:
+                {{ pronostico.punti }}
+            </p>
+
+        </div>
+
+    {% endfor %}
+
+</body>
+
+</html>
