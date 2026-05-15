@@ -62,7 +62,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
-app.secret_key = "SUPER_SECRET_KEY"
+app.secret_key = "FANTAWRESTLING_SUPER_SECRET_2026"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
