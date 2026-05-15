@@ -506,16 +506,16 @@
                 🏅 Classifica Live
             </div>
 
-            {% for utente, punti in classifica %}
+            {% for user in classifica %}
 
                 <div class="rank">
 
                     <div class="rank-name">
-                        {{ loop.index }}. {{ utente }}
+                        {{ loop.index }}. {{ user.username }}
                     </div>
 
                     <div class="rank-points">
-                        🔥 {{ punti }} pt
+                        🔥 {{ user.punti }} pt
                     </div>
 
                 </div>

@@ -69,8 +69,7 @@ login_manager.init_app(app)
 login_manager.login_view = "user_login"
 login_manager.login_message = "🔒 Effettua il login"
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "wwe123"
+
 
 class Card(db.Model):
 
@@ -100,6 +99,11 @@ class Card(db.Model):
     )
 
 class User(UserMixin, db.Model):
+
+    is_admin = db.Column(
+    db.Boolean,
+    default=False
+    )
 
     email = db.Column(
         db.String(200),
@@ -213,11 +217,6 @@ class Pronostico(db.Model):
         default=0
     )
 
-class AdminUser(UserMixin):
-
-    def __init__(self, id):
-
-        self.id = id
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -229,17 +228,30 @@ def load_user(user_id):
     except:
 
         return None
+from functools import wraps
+
+def admin_required(f):
+
+    @wraps(f)
+
+    def decorated_function(
+         *args,
+        **kwargs
+   ):
+
+        if not current_user.is_admin:
+
+            return "Accesso negato"
+
+        return f(*args, **kwargs)
+
+    return decorated_function    
+
 #def load_cards():
 
 #    with open("cards.json", "r", encoding="utf-8") as file:
 
 #        return json.load(file)
-
-def load_classifica():
-
-    with open("classifica.json", "r", encoding="utf-8") as file:
-
-        return json.load(file)
 
 @app.route(
     "/reset_password/<token>",
@@ -279,6 +291,38 @@ def reset_password(token):
 
     return render_template(
         "reset_password.html"
+    )
+    
+
+@app.route("/admin/users")
+@login_required
+@admin_required
+def admin_users():
+
+    users = User.query.all()
+
+    return render_template(
+        "admin_users.html",
+        users=users
+    )
+
+@app.route("/make_admin/<user_id>")
+@login_required
+@admin_required
+def make_admin(user_id):
+
+    user = User.query.get(user_id)
+
+    user.is_admin = True
+
+    db.session.commit()
+
+    flash(
+        "👑 Utente promosso admin"
+    )
+
+    return redirect(
+        url_for("admin_users")
     )
 
 @app.route("/profilo")
@@ -377,27 +421,6 @@ Apri questo link:
         "forgot_password.html"
     )
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-
-    if request.method == "POST":
-
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if (
-            username == ADMIN_USERNAME
-            and password == ADMIN_PASSWORD
-        ):
-
-            user = AdminUser(username)
-
-            login_user(user)
-
-            return redirect(url_for("home"))
-
-    return render_template("login.html")
-
 @app.route("/user_logout")
 @login_required
 def user_logout():
@@ -414,11 +437,16 @@ def logout():
 
     logout_user()
 
-    return redirect(url_for("login"))
+    return redirect(
+    url_for("user_login")
+)
 
-@app.route("/")
+@app.route("/dashboard")
 @login_required
+@admin_required
 def home():
+    print(current_user.username)
+    print(current_user.is_admin)
 
     cards_db = Card.query.all()
 
@@ -443,13 +471,9 @@ def home():
         ]
     }
 
-    classifica = load_classifica()
-
-    classifica_ordinata = sorted(
-        classifica.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
+    classifica_ordinata = User.query.order_by(
+    User.punti.desc()
+    ).all()
 
     totale_cards = len(cards)
 
@@ -458,12 +482,12 @@ def home():
         for card in cards.values()
     )
 
-    totale_utenti = len(classifica)
+    totale_utenti = len(classifica_ordinata)
 
     if len(classifica_ordinata) > 0:
 
-        leader = classifica_ordinata[0][0]
-        punti_leader = classifica_ordinata[0][1]
+        leader = classifica_ordinata[0].username
+        punti_leader = classifica_ordinata[0].punti
 
     else:
 
@@ -473,10 +497,10 @@ def home():
     labels = []
     punti = []
 
-    for utente, score in classifica_ordinata:
+    for user in classifica_ordinata:
 
-        labels.append(utente)
-        punti.append(score)
+        labels.append(user.username)
+        punti.append(user.punti)
 
     return render_template(
         "dashboard.html",
@@ -493,6 +517,7 @@ def home():
 
 @app.route("/elimina_card/<card_id>")
 @login_required
+@admin_required
 def elimina_card(card_id):
 
     card = Card.query.get(card_id)
@@ -507,6 +532,7 @@ def elimina_card(card_id):
 
 @app.route("/modifica_card/<card_id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def modifica_card(card_id):
 
     card = Card.query.get(card_id)
@@ -530,6 +556,7 @@ def modifica_card(card_id):
 
 @app.route("/crea_card", methods=["GET", "POST"])
 @login_required
+@admin_required
 def crea_card():
 
     if request.method == "POST":
@@ -556,6 +583,7 @@ def crea_card():
 
 @app.route("/aggiungi_match/<card_id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def aggiungi_match(card_id):
 
     card = Card.query.get(card_id)
@@ -581,6 +609,7 @@ def aggiungi_match(card_id):
 
 @app.route("/elimina_match/<card_id>/<match_id>")
 @login_required
+@admin_required
 def elimina_match(card_id, match_id):
 
     match = Match.query.get(match_id)
@@ -595,6 +624,7 @@ def elimina_match(card_id, match_id):
 
 @app.route("/modifica_match/<card_id>/<match_id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def modifica_match(card_id, match_id):
 
     match = Match.query.get(match_id)
@@ -644,13 +674,16 @@ def register():
             username=username,
             email=email,
             password=password_hash
+
         )
 
         db.session.add(nuovo_utente)
 
         db.session.commit()
 
-        return redirect(url_for("login"))
+        return redirect(
+            url_for("user_login")
+)
 
     return render_template("register.html")
 
@@ -673,6 +706,11 @@ def user_login():
         ):
 
              login_user(user)
+
+             if user.is_admin:
+                return redirect(
+                    url_for("home"),
+                )
              return redirect(
                 url_for("dashboard_user"),
             )
@@ -788,6 +826,7 @@ def pronostici(card_id):
 
 @app.route("/risultati_match/<match_id>", methods=["GET", "POST"])
 @login_required
+@admin_required
 def risultati_match(match_id):
 
     match = Match.query.get(match_id)
@@ -802,27 +841,28 @@ def risultati_match(match_id):
     
         match_id=match.id
     
-    ).all()
+        ).all()
 
-    for pronostico in pronostici:
+        for pronostico in pronostici:
 
-        punti = 0
+            punti = 0
 
-        if pronostico.risposta1 == match.risultato1:
+            if pronostico.risposta1 == match.risultato1:
 
-            punti += 1
+                punti += 1
 
-        if pronostico.risposta2 == match.risultato2:
+            if pronostico.risposta2 == match.risultato2:
 
-            punti += 1
+                punti += 1
 
-        pronostico.punti = punti
+            pronostico.punti = punti
 
-        user = User.query.get(
-            pronostico.user_id
-       )
+            user = User.query.get(
+                pronostico.user_id
+            )
 
-        user.punti += punti
+            user.punti -= pronostico.punti
+            user.punti += punti
         db.session.commit()
 
         return redirect(url_for("home"))
@@ -832,83 +872,10 @@ def risultati_match(match_id):
         match=match
     )
 
-@app.route("/risultati/<card_id>/<match_index>", methods=["GET", "POST"])
-@login_required
-def risultati(card_id, match_index):
-
-    cards = load_cards()
-
-    with open("pronostici.json", "r", encoding="utf-8") as file:
-
-        pronostici = json.load(file)
-
-    with open("classifica.json", "r", encoding="utf-8") as file:
-
-        classifica = json.load(file)
-
-    match = cards[card_id]["match"][int(match_index)]
-
-    if request.method == "POST":
-
-        risultato1 = request.form["risultato1"]
-        risultato2 = request.form["risultato2"]
-
-        for user_id, dati in pronostici.items():
-
-            if card_id not in dati:
-
-                continue
-
-            if match_index not in dati[card_id]["match"]:
-
-                continue
-
-            pronostico = dati[card_id]["match"][match_index]
-
-            nome = pronostico["utente"]
-
-            punti = 0
-            corrette = 0
-
-            if pronostico["risposta1"] == risultato1:
-
-                corrette += 1
-
-            if pronostico["risposta2"] == risultato2:
-
-                corrette += 1
-
-            if pronostico["bonus"]:
-
-                if corrette == 2:
-
-                    punti = 4
-
-            else:
-
-                punti = corrette
-
-            if nome not in classifica:
-
-                classifica[nome] = 0
-
-            classifica[nome] += punti
-
-        with open("classifica.json", "w", encoding="utf-8") as file:
-
-            json.dump(classifica, file, indent=4, ensure_ascii=False)
-
-        return redirect(url_for("home"))
-
-    return render_template(
-        "risultati.html",
-        match=match
-    )
-
 with app.app_context():
 
     db.create_all()
 
 if __name__ == "__main__":
 
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)

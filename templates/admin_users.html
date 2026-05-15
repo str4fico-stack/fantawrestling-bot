@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Gestione Utenti</title>
+
+    <style>
+
+        body {
+
+            background:#111;
+
+            color:white;
+
+            font-family:Arial;
+
+            padding:20px;
+        }
+
+        .user {
+
+            background:#1f1f1f;
+
+            padding:20px;
+
+            border-radius:16px;
+
+            margin-bottom:15px;
+        }
+
+        button {
+
+            background:crimson;
+
+            color:white;
+
+            border:none;
+
+            padding:10px 14px;
+
+            border-radius:10px;
+
+            cursor:pointer;
+
+            margin-top:10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>
+        👥 Gestione Utenti
+    </h1>
+
+    {% for user in users %}
+
+        <div class="user">
+
+            <h2>
+                {{ user.username }}
+            </h2>
+
+            <p>
+                📧 {{ user.email }}
+            </p>
+
+            <p>
+
+                {% if user.is_admin %}
+
+                    👑 Admin
+
+                {% else %}
+
+                    👤 Utente
+
+                {% endif %}
+
+            </p>
+
+            {% if not user.is_admin %}
+
+                <a href="/make_admin/{{ user.id }}">
+
+                    <button>
+
+                        👑 Rendi Admin
+
+                    </button>
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+</body>
+
+</html>
