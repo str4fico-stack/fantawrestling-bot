@@ -100,6 +100,39 @@
                 </a>
 
             {% endif %}
+            
+            <div class="box">
+
+            <h3>
+                {{ user.username }}
+            </h3>
+
+            <p>
+                📧 {{ user.email }}
+            </p>
+
+        <p>
+                🏆 {{ user.punti }} pt
+            </p>
+
+            <a href="{{ url_for('modifica_punti', user_id=user.id) }}">
+
+                 <button style="
+                    background:crimson;
+                    color:white;
+                    border:none;
+                    padding:10px 14px;
+                    border-radius:10px;
+                    cursor:pointer;
+                    margin-top:10px;
+                ">
+
+                    🏆 Modifica Punti
+
+                </button>
+
+            </a>
+
 
         </div>
 

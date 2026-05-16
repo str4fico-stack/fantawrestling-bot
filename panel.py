@@ -329,6 +329,37 @@ def make_admin(user_id):
         url_for("admin_users")
     )
 
+@app.route(
+    "/modifica_punti/<user_id>",
+    methods=["GET", "POST"]
+)
+@login_required
+@admin_required
+def modifica_punti(user_id):
+
+    user = User.query.get(user_id)
+
+    if request.method == "POST":
+
+        user.punti = int(
+            request.form["punti"]
+        )
+
+        db.session.commit()
+
+        flash(
+            "🏆 Punti aggiornati"
+        )
+
+        return redirect(
+            url_for("admin_users")
+        )
+
+    return render_template(
+        "modifica_punti.html",
+        user=user
+    )
+
 @app.route("/profilo")
 @login_required
 def profilo():

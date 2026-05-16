@@ -91,8 +91,16 @@
             text-decoration: none;
 
             font-weight: bold;
+
+            transition: 0.3s;
         }
 
+        .btn:hover {
+
+            transform: scale(1.05);
+
+            opacity: 0.9;
+        }
         .section {
 
             margin-top: 50px;
@@ -121,6 +129,80 @@
 </head>
 
 <body>
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        gap:15px;
+        margin-bottom:30px;
+    ">
+
+        <div>
+
+           <h1 style="
+               color:gold;
+               font-size:38px;
+               margin-bottom:10px;
+            ">
+              🏆 Fantawrestling
+           </h1>
+
+           <p style="
+               color:#ccc;
+               font-size:18px;
+            ">
+               Pronostica i match WWE e scala la classifica live.
+           </p>
+
+        </div>
+
+        <div style="
+            display:flex;
+            gap:10px;
+        ">
+
+            <a href="{{ url_for('user_login') }}">
+
+                <button style="
+                    background:crimson;
+                    color:white;
+                    border:none;
+                    padding:14px 18px;
+                    border-radius:12px;
+                    cursor:pointer;
+                    font-size:16px;
+               ">
+
+                    🔐 LOGIN
+
+                </button>
+
+            </a>
+
+            <a href="{{ url_for('register') }}">
+
+                <button style="
+                    background:gold;
+                    color:black;
+                    border:none;
+                    padding:14px 18px;
+                    border-radius:12px;
+                    cursor:pointer;
+                    font-size:16px;
+                    font-weight:bold;
+                ">
+
+                    🚀 REGISTRATI
+
+                </button>
+
+            </a>
+
+        </div>
+
+    </div>
+
 
     <div class="hero">
 
@@ -128,26 +210,13 @@
             🏆 Fantawrestling
         </h1>
 
+
         <p>
             Pronostica gli eventi WWE
             e scala la classifica live.
         </p>
 
-        <div class="buttons">
 
-            <a href="/user_login" class="btn">
-
-                🎮 Login
-
-            </a>
-
-            <a href="/register" class="btn">
-
-                👤 Registrati
-
-            </a>
-
-        </div>
 
     </div>
 
