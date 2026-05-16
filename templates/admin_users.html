@@ -5,52 +5,49 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Gestione Utenti</title>
 
     <style>
-
         body {
 
-            background:#111;
+            background: #111;
 
-            color:white;
+            color: white;
 
-            font-family:Arial;
+            font-family: Arial;
 
-            padding:20px;
+            padding: 20px;
         }
 
         .user {
 
-            background:#1f1f1f;
+            background: #1f1f1f;
 
-            padding:20px;
+            padding: 20px;
 
-            border-radius:16px;
+            border-radius: 16px;
 
-            margin-bottom:15px;
+            margin-bottom: 15px;
         }
 
         button {
 
-            background:crimson;
+            background: crimson;
 
-            color:white;
+            color: white;
 
-            border:none;
+            border: none;
 
-            padding:10px 14px;
+            padding: 10px 14px;
 
-            border-radius:10px;
+            border-radius: 10px;
 
-            cursor:pointer;
+            cursor: pointer;
 
-            margin-top:10px;
+            margin-top: 10px;
         }
-
     </style>
 
 </head>
@@ -63,45 +60,45 @@
 
     {% for user in users %}
 
-        <div class="user">
+    <div class="user">
 
-            <h2>
-                {{ user.username }}
-            </h2>
+        <h2>
+            {{ user.username }}
+        </h2>
 
-            <p>
-                📧 {{ user.email }}
-            </p>
+        <p>
+            📧 {{ user.email }}
+        </p>
 
-            <p>
+        <p>
 
-                {% if user.is_admin %}
+            {% if user.is_admin %}
 
-                    👑 Admin
+            👑 Admin
 
-                {% else %}
+            {% else %}
 
-                    👤 Utente
-
-                {% endif %}
-
-            </p>
-
-            {% if not user.is_admin %}
-
-                <a href="/make_admin/{{ user.id }}">
-
-                    <button>
-
-                        👑 Rendi Admin
-
-                    </button>
-
-                </a>
+            👤 Utente
 
             {% endif %}
-            
-            <div class="box">
+
+        </p>
+
+        {% if not user.is_admin %}
+
+        <a href="/make_admin/{{ user.id }}">
+
+            <button>
+
+                👑 Rendi Admin
+
+            </button>
+
+        </a>
+
+        {% endif %}
+
+        <div class="box">
 
             <h3>
                 {{ user.username }}
@@ -111,13 +108,13 @@
                 📧 {{ user.email }}
             </p>
 
-        <p>
+            <p>
                 🏆 {{ user.punti }} pt
             </p>
 
             <a href="{{ url_for('modifica_punti', user_id=user.id) }}">
 
-                 <button style="
+                <button style="
                     background:crimson;
                     color:white;
                     border:none;
@@ -134,9 +131,42 @@
             </a>
 
 
+            {% if not user.is_admin %}
+
+            <a href="{{ url_for('make_admin', user_id=user.id) }}">
+
+                <button style="
+            background:gold;
+            color:black;
+            border:none;
+            padding:10px 14px;
+            border-radius:10px;
+            cursor:pointer;
+            margin-top:10px;
+            font-weight:bold;
+        ">
+
+                    👑 Rendi Admin
+
+                </button>
+
+            </a>
+
+            {% else %}
+
+            <p style="
+        color:gold;
+        margin-top:10px;
+    ">
+
+                👑 Già Admin
+
+            </p>
+
+            {% endif %}
         </div>
 
-    {% endfor %}
+        {% endfor %}
 
 </body>
 
