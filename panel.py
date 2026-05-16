@@ -1,4 +1,5 @@
 from flask_login import current_user
+from telegram_utils import send_telegram_message
 
 import secrets
 
@@ -280,6 +281,9 @@ def reset_password(token):
         user.reset_token = None
 
         db.session.commit()
+        send_telegram_message(
+             f"🔥 Nuova card disponibile!\n\n🏆 {nuova_card.nome}\n\n⏰ Chiusura: {nuova_card.chiusura}"
+        )
 
         flash(
             "✅ Password aggiornata"
@@ -575,6 +579,9 @@ def crea_card():
         db.session.add(nuova_card)
 
         db.session.commit()
+        send_telegram_message(
+            f"🔥 Nuova card disponibile!\n\n🏆 {nuova_card.nome}\n\n⏰ Chiusura: {nuova_card.chiusura}"
+        )
 
         return redirect(url_for("home"))
 
@@ -599,6 +606,9 @@ def aggiungi_match(card_id):
         db.session.add(nuovo_match)
 
         db.session.commit()
+        send_telegram_message(
+        f"🎮 Nuovo match aggiunto!\n\n📌 {nuovo_match.nome}"
+        )
 
         return redirect(url_for("home"))
 
@@ -864,6 +874,9 @@ def risultati_match(match_id):
             user.punti -= pronostico.punti
             user.punti += punti
         db.session.commit()
+        send_telegram_message(
+             f"✅ Risultati aggiornati per il match:\n\n🎯 {match.nome}"
+        )
 
         return redirect(url_for("home"))
 
