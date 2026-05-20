@@ -641,7 +641,7 @@ def crea_card():
     return render_template("crea_card.html")
 
 
-@app.route("/aggiungi_match/<card_id>", methods=["GET", "POST"])
+@app.route("/aggiungi_match/<int:card_id>", methods=["GET", "POST"])
 @login_required
 @admin_required
 def aggiungi_match(card_id):
