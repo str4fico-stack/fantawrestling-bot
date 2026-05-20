@@ -502,46 +502,23 @@ def logout():
 @login_required
 @admin_required
 def home():
-    print(current_user.username)
-    print(current_user.is_admin)
 
-    cards_db = Card.query.all()
-
-    cards = {}
-
-    for card in cards_db:
-
-        cards[str(card.id)] = {
-
-            "nome": card.nome,
-            "apertura": card.apertura,
-            "chiusura": card.chiusura,
-
-            "match": [
-
-                {
-                    "id": m.id,
-                    "nome": m.nome
-                }
-
-                for m in card.match
-        ]
-    }
+    cards = Card.query.all()
 
     classifica_ordinata = User.query.order_by(
-    User.punti.desc()
+        User.punti.desc()
     ).all()
 
     totale_cards = len(cards)
 
     totale_match = sum(
-        len(card["match"])
-        for card in cards.values()
+        len(card.match)
+        for card in cards
     )
 
     totale_utenti = len(classifica_ordinata)
 
-    if len(classifica_ordinata) > 0:
+    if classifica_ordinata:
 
         leader = classifica_ordinata[0].username
         punti_leader = classifica_ordinata[0].punti
@@ -551,13 +528,8 @@ def home():
         leader = "Nessuno"
         punti_leader = 0
 
-    labels = []
-    punti = []
-
-    for user in classifica_ordinata:
-
-        labels.append(user.username)
-        punti.append(user.punti)
+    labels = [u.username for u in classifica_ordinata]
+    punti = [u.punti for u in classifica_ordinata]
 
     return render_template(
         "dashboard.html",
