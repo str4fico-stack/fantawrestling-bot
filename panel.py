@@ -1,6 +1,7 @@
 from flask_login import current_user
 from telegram_utils import send_telegram_message
 
+import uuid
 import secrets
 
 from flask_mail import (
@@ -503,6 +504,9 @@ def logout():
 @admin_required
 def home():
 
+    print(current_user.username)
+    print(current_user.is_admin)
+
     cards = Card.query.all()
 
     classifica_ordinata = User.query.order_by(
@@ -518,7 +522,7 @@ def home():
 
     totale_utenti = len(classifica_ordinata)
 
-    if classifica_ordinata:
+    if len(classifica_ordinata) > 0:
 
         leader = classifica_ordinata[0].username
         punti_leader = classifica_ordinata[0].punti
@@ -528,8 +532,13 @@ def home():
         leader = "Nessuno"
         punti_leader = 0
 
-    labels = [u.username for u in classifica_ordinata]
-    punti = [u.punti for u in classifica_ordinata]
+    labels = []
+    punti = []
+
+    for user in classifica_ordinata:
+
+        labels.append(user.username)
+        punti.append(user.punti)
 
     return render_template(
         "dashboard.html",
@@ -799,14 +808,20 @@ def pronostici(card_id):
 
     card = Card.query.get(card_id)
     
-    chiusura = datetime.strptime(
-       card.chiusura,
-       "%d/%m/%Y %H:%M"
-   )
+    try:
 
-    if datetime.now() > chiusura:
+        chiusura = datetime.strptime(
+           card.chiusura,
+           "%d/%m/%Y %H:%M"
+    )
 
-       return "Pronostici chiusi"
+        if datetime.now() > chiusura:
+
+           return "Pronostici chiusi"
+
+    except:
+
+        return "Formato data card non valido"
 
     if request.method == "POST":
 
@@ -902,13 +917,15 @@ def risultati_match(match_id):
 
                 punti += 1
 
+            vecchi_punti = pronostico.punti
+
             pronostico.punti = punti
 
             user = User.query.get(
                 pronostico.user_id
             )
 
-            user.punti -= pronostico.punti
+            user.punti -= vecchi_punti
             user.punti += punti
         db.session.commit()
         send_telegram_message(
