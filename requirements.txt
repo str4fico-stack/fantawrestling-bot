@@ -6,3 +6,4 @@ Flask-Mail
 Werkzeug
 gunicorn
 requests
+psycopg2-binary==2.9.9
