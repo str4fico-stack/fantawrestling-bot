@@ -5,65 +5,374 @@
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Risultati Match</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
+            color: white;
+
+            font-family: Arial;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .box {
+
+            width: 100%;
+
+            max-width: 700px;
+
+            background:
+                linear-gradient(135deg,
+                    #1d1d1d,
+                    #272727);
+
+            padding: 40px;
+
+            border-radius: 24px;
+
+            border: 1px solid #333;
+
+            box-shadow:
+                0 0 25px rgba(0, 0, 0, 0.45);
+        }
+
+        h1 {
+
+            color: gold;
+
+            margin-bottom: 12px;
+
+            font-size: 36px;
+        }
+
+        .subtitle {
+
+            color: #aaa;
+
+            margin-bottom: 35px;
+
+            line-height: 1.5;
+        }
+
+        .section {
+
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+
+            color: crimson;
+
+            margin-bottom: 18px;
+
+            font-size: 20px;
+
+            font-weight: bold;
+        }
+
+        .field {
+
+            margin-bottom: 22px;
+        }
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 10px;
+
+            color: #ddd;
+
+            font-weight: bold;
+        }
+
+        select {
+
+            width: 100%;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            background: #2d2d2d;
+
+            color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        select:focus {
+
+            border: 1px solid gold;
+
+            box-shadow:
+                0 0 12px rgba(255, 215, 0, 0.25);
+        }
+
+        option {
+
+            background: #1f1f1f;
+        }
+
+        .helper {
+
+            margin-top: 8px;
+
+            color: #888;
+
+            font-size: 13px;
+        }
+
+        .buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 20px;
+        }
+
+        button {
+
+            flex: 1;
+
+            min-width: 180px;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .save-btn {
+
+            background:
+                linear-gradient(135deg,
+                    gold,
+                    #ffcf33);
+
+            color: black;
+        }
+
+        .back-btn {
+
+            background: #2d2d2d;
+
+            color: white;
+        }
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 15px rgba(255, 215, 0, 0.25);
+        }
+
+        .back-link {
+
+            text-decoration: none;
+
+            flex: 1;
+        }
+
+        @media(max-width:650px) {
+
+            .box {
+
+                padding: 30px 22px;
+            }
+
+            h1 {
+
+                font-size: 30px;
+            }
+
+            .buttons {
+
+                flex-direction: column;
+            }
+        }
+    </style>
 
 </head>
 
-<body style="
-    background:#111;
-    color:white;
-    font-family:Arial;
-    padding:40px;
-">
+<body>
 
-    <h1>
-        🏆 Risultati {{ match.nome }}
-    </h1>
+    <div class="box">
 
-    <form method="POST">
+        <!-- HEADER -->
 
-        <p>
-            Risultato 1
-        </p>
+        <h1>
+            🏆 {{ match.nome }}
+        </h1>
 
-        <input
-            type="text"
-            name="risultato1"
-            style="
-                width:100%;
-                padding:12px;
-                margin-bottom:20px;
-            "
-        >
+        <div class="subtitle">
 
-        <p>
-            Risultato 2
-        </p>
+            Inserisci i risultati ufficiali
+            del match WWE per aggiornare
+            automaticamente la classifica.
 
-        <input
-            type="text"
-            name="risultato2"
-            style="
-                width:100%;
-                padding:12px;
-                margin-bottom:20px;
-            "
-        >
+        </div>
 
-        <button type="submit" style="
-            background:crimson;
-            color:white;
-            border:none;
-            padding:14px 20px;
-            border-radius:10px;
-            cursor:pointer;
-        ">
+        <form method="POST">
 
-            SALVA RISULTATI
+            <!-- RISULTATO 1 -->
 
-        </button>
+            <div class="section">
 
-    </form>
+                <div class="section-title">
+
+                    🎯 Risultato 1
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+
+                        {{ match.domanda1 or "Risultato principale" }}
+
+                    </label>
+
+                    <select name="risultato1" required>
+
+                        <option value="">
+                            Seleziona risultato
+                        </option>
+
+                        {% for risposta in match.risposte1.split(',') %}
+
+                        <option value="{{ risposta.strip() }}">
+
+                            {{ risposta.strip() }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- RISULTATO 2 -->
+
+            {% if match.domanda2 %}
+
+            <div class="section">
+
+                <div class="section-title">
+
+                    🎯 Risultato 2
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+
+                        {{ match.domanda2 }}
+
+                    </label>
+
+                    <select name="risultato2">
+
+                        <option value="">
+                            Seleziona risultato
+                        </option>
+
+                        {% for risposta in match.risposte2.split(',') %}
+
+                        <option value="{{ risposta.strip() }}">
+
+                            {{ risposta.strip() }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                    <div class="helper">
+
+                        Questo aggiornerà automaticamente
+                        i punti degli utenti.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            <!-- BUTTONS -->
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+
+                    💾 SALVA RISULTATI
+
+                </button>
+
+                <a href="/dashboard" class="back-link">
+
+                    <button type="button" class="back-btn">
+
+                        ← TORNA DASHBOARD
+
+                    </button>
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </body>
 

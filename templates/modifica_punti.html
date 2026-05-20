@@ -1,62 +1,303 @@
 <!DOCTYPE html>
-
 <html lang="it">
 
 <head>
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Modifica Punti</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
+            color: white;
+
+            font-family: Arial;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+        }
+
+        .box {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            background:
+                linear-gradient(135deg,
+                    #1d1d1d,
+                    #272727);
+
+            padding: 40px;
+
+            border-radius: 24px;
+
+            border: 1px solid #333;
+
+            box-shadow:
+                0 0 25px rgba(0, 0, 0, 0.45);
+        }
+
+        h1 {
+
+            color: gold;
+
+            margin-bottom: 12px;
+
+            font-size: 34px;
+        }
+
+        .subtitle {
+
+            color: #aaa;
+
+            margin-bottom: 35px;
+
+            line-height: 1.5;
+        }
+
+        .user-card {
+
+            background: #2a2a2a;
+
+            padding: 18px;
+
+            border-radius: 16px;
+
+            margin-bottom: 30px;
+
+            border: 1px solid #333;
+        }
+
+        .username {
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            color: white;
+
+            margin-bottom: 8px;
+        }
+
+        .current-points {
+
+            color: gold;
+
+            font-size: 16px;
+        }
+
+        label {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            font-weight: bold;
+
+            color: #ddd;
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            background: #2d2d2d;
+
+            color: white;
+
+            font-size: 18px;
+
+            outline: none;
+
+            transition: 0.3s;
+
+            margin-bottom: 25px;
+        }
+
+        input:focus {
+
+            border: 1px solid crimson;
+
+            box-shadow:
+                0 0 12px rgba(220, 20, 60, 0.4);
+        }
+
+        .buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+        button {
+
+            flex: 1;
+
+            min-width: 180px;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .save-btn {
+
+            background:
+                linear-gradient(135deg,
+                    gold,
+                    #ffcf33);
+
+            color: black;
+        }
+
+        .back-btn {
+
+            background: #2d2d2d;
+
+            color: white;
+        }
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 15px rgba(255, 215, 0, 0.25);
+        }
+
+        .back-link {
+
+            text-decoration: none;
+
+            flex: 1;
+        }
+
+        @media(max-width:600px) {
+
+            .box {
+
+                padding: 30px 22px;
+            }
+
+            h1 {
+
+                font-size: 28px;
+            }
+
+            .buttons {
+
+                flex-direction: column;
+            }
+        }
+    </style>
 
 </head>
 
-<body style="
-    background:#111;
-    color:white;
-    font-family:Arial;
-    padding:40px;
-">
+<body>
 
-    <h1>
-        🏆 Modifica Punti
-    </h1>
+    <div class="box">
 
-    <h2>
-        {{ user.username }}
-    </h2>
+        <h1>
+            🏆 Modifica Punti
+        </h1>
 
-    <form method="POST">
+        <div class="subtitle">
 
-        <input
-            type="number"
-            name="punti"
-            value="{{ user.punti }}"
-            style="
-                padding:12px;
-                border-radius:10px;
-                border:none;
-                width:200px;
-                margin-top:20px;
-            "
-        >
+            Aggiorna manualmente il punteggio
+            dell’utente nella classifica Fantawrestling.
 
-        <br><br>
+        </div>
 
-        <button style="
-            background:gold;
-            color:black;
-            border:none;
-            padding:12px 18px;
-            border-radius:10px;
-            cursor:pointer;
-            font-weight:bold;
-        ">
+        <div class="user-card">
 
-            💾 Salva
+            <div class="username">
 
-        </button>
+                👤 {{ user.username }}
 
-    </form>
+            </div>
+
+            <div class="current-points">
+
+                Punti attuali:
+                🔥 {{ user.punti }}
+
+            </div>
+
+        </div>
+
+        <form method="POST">
+
+            <label>
+
+                Nuovo punteggio
+
+            </label>
+
+            <input type="number" name="punti" value="{{ user.punti }}" required>
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+
+                    💾 SALVA PUNTEGGIO
+
+                </button>
+
+                <a href="/admin/users" class="back-link">
+
+                    <button type="button" class="back-btn">
+
+                        ← TORNA UTENTI
+
+                    </button>
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </body>
 

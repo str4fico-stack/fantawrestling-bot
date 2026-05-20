@@ -5,15 +5,12 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Fantawrestling</title>
 
     <style>
-
         * {
-
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -22,30 +19,116 @@
         body {
 
             background:
-            linear-gradient(
-                180deg,
-                #111,
-                #1a1a1a
-            );
+                linear-gradient(180deg,
+                    #0f0f0f,
+                    #181818);
 
             color: white;
 
             font-family: Arial;
 
             min-height: 100vh;
-
-            padding: 20px;
         }
+
+        /* HEADER */
+
+        .header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 20px;
+
+            padding: 25px 40px;
+
+            border-bottom: 1px solid #222;
+
+            background: #111;
+        }
+
+        .logo h1 {
+
+            color: gold;
+
+            font-size: 38px;
+
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+
+            color: #aaa;
+
+            font-size: 16px;
+        }
+
+        .header-buttons {
+
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+        .header-buttons a {
+
+            text-decoration: none;
+        }
+
+        .header-buttons button {
+
+            border: none;
+
+            padding: 14px 20px;
+
+            border-radius: 12px;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .login-btn {
+
+            background: crimson;
+
+            color: white;
+        }
+
+        .register-btn {
+
+            background: gold;
+
+            color: black;
+        }
+
+        .header-buttons button:hover {
+
+            transform: translateY(-2px);
+
+            opacity: 0.92;
+        }
+
+        /* HERO */
 
         .hero {
 
             text-align: center;
 
-            margin-top: 60px;
-            margin-bottom: 60px;
+            padding: 80px 20px 60px;
         }
 
-        .hero h1 {
+        .hero h2 {
 
             font-size: 60px;
 
@@ -56,123 +139,186 @@
 
         .hero p {
 
-            font-size: 20px;
-
             color: #ccc;
 
-            margin-bottom: 30px;
+            font-size: 22px;
+
+            max-width: 750px;
+
+            margin: auto;
+
+            line-height: 1.5;
         }
 
-        .buttons {
+        /* CONTAINER */
 
-            display: flex;
+        .container {
 
-            justify-content: center;
+            width: 100%;
 
-            gap: 15px;
+            max-width: 1200px;
 
-            flex-wrap: wrap;
+            margin: auto;
+
+            padding: 20px;
         }
 
-        .btn {
+        /* SECTIONS */
 
-            background: crimson;
-
-            color: white;
-
-            border: none;
-
-            padding: 14px 22px;
-
-            border-radius: 12px;
-
-            cursor: pointer;
-
-            text-decoration: none;
-
-            font-weight: bold;
-
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-
-            transform: scale(1.05);
-
-            opacity: 0.9;
-        }
         .section {
 
             margin-top: 50px;
         }
 
-        .section h2 {
+        .section-title {
+
+            font-size: 30px;
 
             color: gold;
 
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
+
+        /* BOX */
 
         .box {
 
-            background: #1f1f1f;
+            background:
+                linear-gradient(135deg,
+                    #1e1e1e,
+                    #252525);
 
-            padding: 20px;
+            padding: 22px;
 
-            border-radius: 16px;
+            border-radius: 18px;
 
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+
+            border: 1px solid #2e2e2e;
+
+            transition: 0.3s;
+
+            box-shadow:
+                0 0 15px rgba(0, 0, 0, 0.3);
         }
 
+        .box:hover {
+
+            transform: translateY(-3px);
+
+            border-color: crimson;
+
+            box-shadow:
+                0 0 20px rgba(220, 20, 60, 0.2);
+        }
+
+        .box h3 {
+
+            color: white;
+
+            margin-bottom: 12px;
+
+            font-size: 24px;
+        }
+
+        .box p {
+
+            color: #ccc;
+
+            line-height: 1.5;
+        }
+
+        /* PLAYER */
+
+        .player {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .player-name {
+
+            color: white;
+
+            font-weight: bold;
+
+            font-size: 18px;
+        }
+
+        .player-points {
+
+            color: gold;
+
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+
+        .footer {
+
+            text-align: center;
+
+            padding: 40px 20px;
+
+            color: #777;
+
+            margin-top: 60px;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:768px) {
+
+            .header {
+
+                padding: 20px;
+            }
+
+            .hero h2 {
+
+                font-size: 42px;
+            }
+
+            .hero p {
+
+                font-size: 18px;
+            }
+
+            .section-title {
+
+                font-size: 24px;
+            }
+        }
     </style>
 
 </head>
 
 <body>
-    <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        flex-wrap:wrap;
-        gap:15px;
-        margin-bottom:30px;
-    ">
 
-        <div>
+    <!-- HEADER -->
 
-           <h1 style="
-               color:gold;
-               font-size:38px;
-               margin-bottom:10px;
-            ">
-              🏆 Fantawrestling
-           </h1>
+    <div class="header">
 
-           <p style="
-               color:#ccc;
-               font-size:18px;
-            ">
-               Pronostica i match WWE e scala la classifica live.
-           </p>
+        <div class="logo">
+
+            <h1>
+                🏆 Fantawrestling
+            </h1>
+
+            <p>
+                Pronostica i match WWE e scala la classifica live.
+            </p>
 
         </div>
 
-        <div style="
-            display:flex;
-            gap:10px;
-        ">
+        <div class="header-buttons">
 
             <a href="{{ url_for('user_login') }}">
 
-                <button style="
-                    background:crimson;
-                    color:white;
-                    border:none;
-                    padding:14px 18px;
-                    border-radius:12px;
-                    cursor:pointer;
-                    font-size:16px;
-               ">
+                <button class="login-btn">
 
                     🔐 LOGIN
 
@@ -182,16 +328,7 @@
 
             <a href="{{ url_for('register') }}">
 
-                <button style="
-                    background:gold;
-                    color:black;
-                    border:none;
-                    padding:14px 18px;
-                    border-radius:12px;
-                    cursor:pointer;
-                    font-size:16px;
-                    font-weight:bold;
-                ">
+                <button class="register-btn">
 
                     🚀 REGISTRATI
 
@@ -203,66 +340,100 @@
 
     </div>
 
+    <!-- HERO -->
 
     <div class="hero">
 
-        <h1>
-            🏆 Fantawrestling
-        </h1>
-
+        <h2>
+            WWE Fantasy Experience
+        </h2>
 
         <p>
-            Pronostica gli eventi WWE
-            e scala la classifica live.
+            Crea pronostici sugli eventi WWE,
+            guadagna punti,
+            scala la classifica
+            e sfida gli altri player live.
         </p>
-
-
 
     </div>
 
-    <div class="section">
+    <!-- CONTENT -->
 
-        <h2>
-            🔥 Top Players
-        </h2>
+    <div class="container">
 
-        {% for player in classifica %}
+        <!-- CLASSIFICA -->
 
-            <div class="box">
+        <div class="section">
 
-                {{ loop.index }}.
-                {{ player.username }}
+            <div class="section-title">
 
-                - 🏆 {{ player.punti }} pt
+                🔥 Top Players
 
             </div>
 
-        {% endfor %}
+            {% for player in classifica %}
 
-    </div>
+            <div class="box player">
 
-    <div class="section">
+                <div class="player-name">
 
-        <h2>
-            📋 Eventi Attivi
-        </h2>
+                    {{ loop.index }}.
+                    {{ player.username }}
 
-        {% for card in cards %}
+                </div>
+
+                <div class="player-points">
+
+                    🏆 {{ player.punti }} pt
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- EVENTI -->
+
+        <div class="section">
+
+            <div class="section-title">
+
+                📋 Eventi Attivi
+
+            </div>
+
+            {% for card in cards %}
 
             <div class="box">
 
                 <h3>
+
                     {{ card.nome }}
+
                 </h3>
 
                 <p>
+
                     🔒 Chiusura:
                     {{ card.chiusura }}
+
                 </p>
 
             </div>
 
-        {% endfor %}
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        © 2026 Fantawrestling WWE
 
     </div>
 

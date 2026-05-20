@@ -4,61 +4,205 @@
 <head>
 
     <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Modifica Card</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
 
-            background: #111;
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
             color: white;
+
             font-family: Arial;
-            padding: 40px;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
         }
 
         .box {
 
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 600px;
+            width: 100%;
+
+            max-width: 650px;
+
+            background:
+                linear-gradient(135deg,
+                    #1e1e1e,
+                    #272727);
+
+            padding: 40px;
+
+            border-radius: 24px;
+
+            border: 1px solid #333;
+
+            box-shadow:
+                0 0 25px rgba(0, 0, 0, 0.45);
         }
 
         h1 {
 
             color: gold;
-            margin-bottom: 25px;
+
+            margin-bottom: 12px;
+
+            font-size: 36px;
+        }
+
+        .subtitle {
+
+            color: #aaa;
+
+            margin-bottom: 35px;
+
+            line-height: 1.5;
+        }
+
+        .field {
+
+            margin-bottom: 22px;
+        }
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 10px;
+
+            color: #ddd;
+
+            font-weight: bold;
         }
 
         input {
 
             width: 100%;
-            padding: 14px;
-            margin-bottom: 20px;
-            border-radius: 10px;
+
+            padding: 16px;
+
             border: none;
-            background: #2a2a2a;
+
+            border-radius: 14px;
+
+            background: #2c2c2c;
+
             color: white;
-            font-size: 15px;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        input:focus {
+
+            border: 1px solid crimson;
+
+            box-shadow:
+                0 0 12px rgba(220, 20, 60, 0.4);
+        }
+
+        .buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 10px;
         }
 
         button {
 
-            background: crimson;
-            color: white;
+            flex: 1;
+
+            min-width: 180px;
+
+            padding: 16px;
+
             border: none;
-            padding: 14px 20px;
-            border-radius: 10px;
+
+            border-radius: 14px;
+
             cursor: pointer;
-            font-size: 15px;
+
+            font-size: 16px;
+
             font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .save-btn {
+
+            background:
+                linear-gradient(135deg,
+                    crimson,
+                    #ff2f5b);
+
+            color: white;
+        }
+
+        .back-btn {
+
+            background: #2d2d2d;
+
+            color: white;
         }
 
         button:hover {
 
-            background: red;
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 15px rgba(255, 0, 80, 0.35);
         }
 
+        .back-link {
+
+            text-decoration: none;
+
+            flex: 1;
+        }
+
+        @media(max-width:600px) {
+
+            .box {
+
+                padding: 30px 22px;
+            }
+
+            h1 {
+
+                font-size: 30px;
+            }
+
+            .buttons {
+
+                flex-direction: column;
+            }
+        }
     </style>
 
 </head>
@@ -67,34 +211,69 @@
 
     <div class="box">
 
-        <h1>✏️ Modifica Card</h1>
+        <h1>
+            ✏️ Modifica Card
+        </h1>
+
+        <div class="subtitle">
+
+            Modifica le informazioni della card WWE,
+            inclusi nome evento,
+            apertura e chiusura pronostici.
+
+        </div>
 
         <form method="POST">
 
-            <input
-                type="text"
-                name="nome"
-                value="{{ card.nome }}"
-                required
-            >
+            <div class="field">
 
-            <input
-                type="text"
-                name="apertura"
-                value="{{ card.apertura }}"
-                required
-            >
+                <label>
+                    🏆 Nome Evento
+                </label>
 
-            <input
-                type="text"
-                name="chiusura"
-                value="{{ card.chiusura }}"
-                required
-            >
+                <input type="text" name="nome" value="{{ card.nome }}" required>
 
-            <button type="submit">
-                💾 SALVA MODIFICHE
-            </button>
+            </div>
+
+            <div class="field">
+
+                <label>
+                    🕒 Apertura Pronostici
+                </label>
+
+                <input type="text" name="apertura" value="{{ card.apertura }}" required>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    🔒 Chiusura Pronostici
+                </label>
+
+                <input type="text" name="chiusura" value="{{ card.chiusura }}" required>
+
+            </div>
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+
+                    💾 SALVA MODIFICHE
+
+                </button>
+
+                <a href="/dashboard" class="back-link">
+
+                    <button type="button" class="back-btn">
+
+                        ← TORNA DASHBOARD
+
+                    </button>
+
+                </a>
+
+            </div>
 
         </form>
 

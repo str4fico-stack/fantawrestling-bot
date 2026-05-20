@@ -5,83 +5,352 @@
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Pronostici</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
+            color: white;
+
+            font-family: Arial;
+
+            min-height: 100vh;
+
+            padding: 25px;
+        }
+
+        .container {
+
+            width: 100%;
+
+            max-width: 1000px;
+
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        .header {
+
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+
+            color: gold;
+
+            font-size: 42px;
+
+            margin-bottom: 12px;
+        }
+
+        .header p {
+
+            color: #aaa;
+
+            font-size: 18px;
+        }
+
+        /* MATCH BOX */
+
+        .match-box {
+
+            background:
+                linear-gradient(135deg,
+                    #1d1d1d,
+                    #282828);
+
+            padding: 28px;
+
+            border-radius: 24px;
+
+            border: 1px solid #333;
+
+            margin-bottom: 25px;
+
+            transition: 0.3s;
+
+            box-shadow:
+                0 0 18px rgba(0, 0, 0, 0.35);
+        }
+
+        .match-box:hover {
+
+            border-color: crimson;
+
+            transform: translateY(-2px);
+        }
+
+        .match-title {
+
+            color: white;
+
+            font-size: 28px;
+
+            margin-bottom: 25px;
+
+            font-weight: bold;
+        }
+
+        /* QUESTIONS */
+
+        .question {
+
+            margin-bottom: 25px;
+        }
+
+        .question label {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            color: #ddd;
+
+            font-weight: bold;
+
+            font-size: 16px;
+        }
+
+        select {
+
+            width: 100%;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            background: #2c2c2c;
+
+            color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        select:focus {
+
+            border: 1px solid crimson;
+
+            box-shadow:
+                0 0 10px rgba(220, 20, 60, 0.4);
+        }
+
+        option {
+
+            background: #1f1f1f;
+        }
+
+        /* BUTTON */
+
+        .submit-btn {
+
+            width: 100%;
+
+            padding: 18px;
+
+            border: none;
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(135deg,
+                    crimson,
+                    #ff2f5b);
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+            margin-top: 15px;
+        }
+
+        .submit-btn:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 18px rgba(255, 0, 80, 0.3);
+        }
+
+        /* BACK */
+
+        .back {
+
+            display: inline-block;
+
+            margin-top: 25px;
+
+            color: #bbb;
+
+            text-decoration: none;
+
+            transition: 0.3s;
+        }
+
+        .back:hover {
+
+            color: gold;
+        }
+
+        /* MOBILE */
+
+        @media(max-width:700px) {
+
+            .header h1 {
+
+                font-size: 34px;
+            }
+
+            .match-title {
+
+                font-size: 24px;
+            }
+        }
+    </style>
 
 </head>
 
-<body style="
-    background:#111;
-    color:white;
-    font-family:Arial;
-    padding:40px;
-">
+<body>
 
-    <h1>
-        🎮 Pronostici {{ card.nome }}
-    </h1>
+    <div class="container">
 
-    <form method="POST">
+        <!-- HEADER -->
 
-        {% for match in card.match %}
+        <div class="header">
 
-            <div style="
-                background:#1f1f1f;
-                padding:20px;
-                border-radius:15px;
-                margin-bottom:20px;
-            ">
+            <h1>
+                🎮 {{ card.nome }}
+            </h1>
 
-                <h2>
-                    {{ match.nome }}
-                </h2>
+            <p>
 
-                <p>
-                    Vincitore Match
-                </p>
+                Inserisci i tuoi pronostici
+                per l’evento WWE.
 
-                <input
-                    type="text"
-                    name="risposta1_{{ match.id }}"
-                    placeholder="Scrivi pronostico"
-                    style="
-                        width:100%;
-                        padding:12px;
-                        margin-bottom:10px;
-                    "
-                >
+            </p>
 
-                <p>
-                    Evento speciale
-                </p>
+        </div>
 
-                <input
-                    type="text"
-                    name="risposta2_{{ match.id }}"
-                    placeholder="Scrivi pronostico"
-                    style="
-                        width:100%;
-                        padding:12px;
-                    "
-                >
+        <form method="POST">
+
+            {% for match in card.match %}
+
+            <div class="match-box">
+
+                <div class="match-title">
+
+                    🏆 {{ match.nome }}
+
+                </div>
+
+                <!-- DOMANDA 1 -->
+
+                <div class="question">
+
+                    <label>
+
+                        {{ match.domanda1 or "Chi vincerà il match?" }}
+
+                    </label>
+
+                    <select name="risposta1_{{ match.id }}" required>
+
+                        <option value="">
+                            Seleziona risposta
+                        </option>
+
+                        {% for risposta in match.risposte1.split(',') %}
+
+                        <option value="{{ risposta.strip() }}">
+
+                            {{ risposta.strip() }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- DOMANDA 2 -->
+
+                {% if match.domanda2 %}
+
+                <div class="question">
+
+                    <label>
+
+                        {{ match.domanda2 }}
+
+                    </label>
+
+                    <select name="risposta2_{{ match.id }}">
+
+                        <option value="">
+                            Seleziona risposta
+                        </option>
+
+                        {% for risposta in match.risposte2.split(',') %}
+
+                        <option value="{{ risposta.strip() }}">
+
+                            {{ risposta.strip() }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                {% endif %}
 
             </div>
 
-        {% endfor %}
+            {% endfor %}
 
-        <button type="submit" style="
-            background:crimson;
-            color:white;
-            border:none;
-            padding:14px 20px;
-            border-radius:10px;
-            cursor:pointer;
-        ">
+            <button type="submit" class="submit-btn">
 
-            SALVA PRONOSTICI
+                🚀 SALVA PRONOSTICI
 
-        </button>
+            </button>
 
-    </form>
+        </form>
+
+        <a href="/dashboard_user" class="back">
+
+            ← Torna alla Dashboard
+
+        </a>
+
+    </div>
 
 </body>
 

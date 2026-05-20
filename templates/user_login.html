@@ -5,12 +5,12 @@
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login Utente</title>
 
     <style>
-
         * {
-
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -18,73 +18,183 @@
 
         body {
 
-            background: #111;
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
             color: white;
+
             font-family: Arial;
 
+            min-height: 100vh;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
 
-            height: 100vh;
+            padding: 20px;
         }
 
         .box {
 
-            background: #1f1f1f;
+            width: 100%;
+
+            max-width: 460px;
+
+            background:
+                linear-gradient(135deg,
+                    #1d1d1d,
+                    #272727);
 
             padding: 40px;
 
-            border-radius: 18px;
+            border-radius: 24px;
 
-            width: 400px;
+            border: 1px solid #333;
+
+            box-shadow:
+                0 0 25px rgba(0, 0, 0, 0.45);
         }
 
-        h1 {
+        .logo {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
 
             color: gold;
 
-            margin-bottom: 30px;
+            font-size: 40px;
 
-            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .logo p {
+
+            color: #aaa;
+
+            line-height: 1.5;
+
+            font-size: 15px;
+        }
+
+        .field {
+
+            margin-bottom: 18px;
         }
 
         input {
 
             width: 100%;
 
-            padding: 14px;
-
-            margin-bottom: 15px;
+            padding: 16px;
 
             border: none;
 
-            border-radius: 10px;
+            border-radius: 14px;
 
-            background: #2a2a2a;
+            background: #2d2d2d;
 
             color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        input:focus {
+
+            border: 1px solid crimson;
+
+            box-shadow:
+                0 0 12px rgba(220, 20, 60, 0.35);
         }
 
         button {
 
             width: 100%;
 
-            padding: 14px;
+            padding: 16px;
 
             border: none;
 
-            border-radius: 10px;
+            border-radius: 14px;
 
-            background: crimson;
+            background:
+                linear-gradient(135deg,
+                    crimson,
+                    #ff2f5b);
 
             color: white;
+
+            font-size: 16px;
 
             font-weight: bold;
 
             cursor: pointer;
+
+            transition: 0.3s;
+
+            margin-top: 10px;
         }
 
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 15px rgba(255, 0, 80, 0.3);
+        }
+
+        .links {
+
+            margin-top: 25px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+            text-align: center;
+        }
+
+        .links a {
+
+            color: #bbb;
+
+            text-decoration: none;
+
+            transition: 0.3s;
+
+            font-size: 14px;
+        }
+
+        .links a:hover {
+
+            color: gold;
+        }
+
+        @media(max-width:550px) {
+
+            .box {
+
+                padding: 30px 22px;
+            }
+
+            .logo h1 {
+
+                font-size: 34px;
+            }
+        }
     </style>
 
 </head>
@@ -93,36 +203,71 @@
 
     <div class="box">
 
-        <h1>🎮 Login Giocatore</h1>
+        <!-- HEADER -->
+
+        <div class="logo">
+
+            <h1>
+                🎮 Fantawrestling
+            </h1>
+
+            <p>
+
+                Accedi al tuo account
+                e inizia a pronosticare
+                gli eventi WWE live.
+
+            </p>
+
+        </div>
+
+        <!-- FORM -->
 
         <form method="POST">
 
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                required
-            >
+            <div class="field">
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                required
-            >
+                <input type="text" name="username" placeholder="👤 Username" required>
+
+            </div>
+
+            <div class="field">
+
+                <input type="password" name="password" placeholder="🔒 Password" required>
+
+            </div>
 
             <button type="submit">
-                ACCEDI
+
+                🚀 ACCEDI
+
             </button>
 
         </form>
 
-        <a href="/forgot_password"
-        style="color:gold;">
+        <!-- LINKS -->
 
-            Password dimenticata?
+        <div class="links">
 
-        </a>
+            <a href="/forgot_password">
+
+                🔑 Password dimenticata?
+
+            </a>
+
+            <a href="/register">
+
+                👤 Non hai un account? Registrati
+
+            </a>
+
+            <a href="/">
+
+                ← Torna alla Home
+
+            </a>
+
+        </div>
 
     </div>
 

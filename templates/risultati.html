@@ -5,93 +5,353 @@
 
     <meta charset="UTF-8">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Inserisci Risultati</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background: #111;
+
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
             color: white;
+
             font-family: Arial;
-            padding: 30px;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
         }
 
         .box {
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 600px;
+
+            width: 100%;
+
+            max-width: 700px;
+
+            background:
+                linear-gradient(135deg,
+                    #1d1d1d,
+                    #272727);
+
+            padding: 40px;
+
+            border-radius: 24px;
+
+            border: 1px solid #333;
+
+            box-shadow:
+                0 0 25px rgba(0, 0, 0, 0.45);
         }
 
         h1 {
+
             color: gold;
+
+            margin-bottom: 12px;
+
+            font-size: 36px;
+        }
+
+        .subtitle {
+
+            color: #aaa;
+
+            margin-bottom: 35px;
+
+            line-height: 1.5;
+        }
+
+        .match-name {
+
+            font-size: 26px;
+
+            margin-bottom: 30px;
+
+            font-weight: bold;
+
+            color: white;
+        }
+
+        .field {
+
+            margin-bottom: 28px;
+        }
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 12px;
+
+            color: #ddd;
+
+            font-weight: bold;
+
+            font-size: 16px;
         }
 
         select {
+
             width: 100%;
-            padding: 12px;
-            border-radius: 8px;
+
+            padding: 16px;
+
             border: none;
-            margin-bottom: 20px;
-            background: #2a2a2a;
+
+            border-radius: 14px;
+
+            background: #2d2d2d;
+
             color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        select:focus {
+
+            border: 1px solid gold;
+
+            box-shadow:
+                0 0 12px rgba(255, 215, 0, 0.25);
+        }
+
+        option {
+
+            background: #1f1f1f;
+        }
+
+        .helper {
+
+            margin-top: 8px;
+
+            color: #888;
+
+            font-size: 13px;
+        }
+
+        .buttons {
+
+            display: flex;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 20px;
         }
 
         button {
-            background: crimson;
-            color: white;
+
+            flex: 1;
+
+            min-width: 180px;
+
+            padding: 16px;
+
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+
+            border-radius: 14px;
+
             cursor: pointer;
+
+            font-size: 16px;
+
             font-weight: bold;
+
+            transition: 0.3s;
         }
 
+        .save-btn {
+
+            background:
+                linear-gradient(135deg,
+                    crimson,
+                    #ff2f5b);
+
+            color: white;
+        }
+
+        .back-btn {
+
+            background: #2d2d2d;
+
+            color: white;
+        }
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 15px rgba(255, 0, 80, 0.25);
+        }
+
+        .back-link {
+
+            text-decoration: none;
+
+            flex: 1;
+        }
+
+        @media(max-width:650px) {
+
+            .box {
+
+                padding: 30px 22px;
+            }
+
+            h1 {
+
+                font-size: 30px;
+            }
+
+            .buttons {
+
+                flex-direction: column;
+            }
+        }
     </style>
 
 </head>
 
 <body>
 
-    <h1>🏆 Inserisci Risultati</h1>
-
     <div class="box">
 
-        <h2>{{ match.nome }}</h2>
+        <!-- HEADER -->
+
+        <h1>
+            🏆 Inserisci Risultati
+        </h1>
+
+        <div class="subtitle">
+
+            Inserisci i risultati ufficiali
+            del match WWE e aggiorna
+            automaticamente i punteggi.
+
+        </div>
+
+        <div class="match-name">
+
+            🎮 {{ match.nome }}
+
+        </div>
 
         <form method="POST">
 
-            <label>{{ match.domanda1 }}</label>
+            <!-- RISULTATO 1 -->
 
-            <select name="risultato1">
+            <div class="field">
 
-                {% for risposta in match.risposte1 %}
+                <label>
 
-                    <option value="{{ risposta }}">
-                        {{ risposta }}
+                    {{ match.domanda1 }}
+
+                </label>
+
+                <select name="risultato1" required>
+
+                    <option value="">
+                        Seleziona risultato
                     </option>
 
-                {% endfor %}
+                    {% for risposta in match.risposte1.split(',') %}
 
-            </select>
+                    <option value="{{ risposta.strip() }}">
 
-            <label>{{ match.domanda2 }}</label>
+                        {{ risposta.strip() }}
 
-            <select name="risultato2">
-
-                {% for risposta in match.risposte2 %}
-
-                    <option value="{{ risposta }}">
-                        {{ risposta }}
                     </option>
 
-                {% endfor %}
+                    {% endfor %}
 
-            </select>
+                </select>
 
-            <button type="submit">
-                CALCOLA PUNTI
-            </button>
+            </div>
+
+            <!-- RISULTATO 2 -->
+
+            {% if match.domanda2 %}
+
+            <div class="field">
+
+                <label>
+
+                    {{ match.domanda2 }}
+
+                </label>
+
+                <select name="risultato2">
+
+                    <option value="">
+                        Seleziona risultato
+                    </option>
+
+                    {% for risposta in match.risposte2.split(',') %}
+
+                    <option value="{{ risposta.strip() }}">
+
+                        {{ risposta.strip() }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <div class="helper">
+
+                    Questo aggiornerà automaticamente
+                    i punti utenti.
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            <!-- BUTTONS -->
+
+            <div class="buttons">
+
+                <button type="submit" class="save-btn">
+
+                    💾 CALCOLA PUNTI
+
+                </button>
+
+                <a href="/dashboard" class="back-link">
+
+                    <button type="button" class="back-btn">
+
+                        ← TORNA DASHBOARD
+
+                    </button>
+
+                </a>
+
+            </div>
 
         </form>
 

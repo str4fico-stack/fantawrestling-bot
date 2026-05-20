@@ -4,45 +4,192 @@
 <head>
 
     <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login Admin</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            background: #111;
-            color: white;
+
+            background:
+                linear-gradient(135deg,
+                    #0f0f0f,
+                    #1b1b1b);
+
             font-family: Arial;
+
+            min-height: 100vh;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
-            height: 100vh;
+
+            padding: 20px;
+
+            color: white;
         }
 
         .login-box {
-            background: #1e1e1e;
+
+            width: 100%;
+
+            max-width: 420px;
+
+            background:
+                linear-gradient(135deg,
+                    #1d1d1d,
+                    #262626);
+
             padding: 40px;
-            border-radius: 12px;
-            width: 300px;
+
+            border-radius: 22px;
+
+            border: 1px solid #333;
+
+            box-shadow:
+                0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+
+            color: gold;
+
+            font-size: 38px;
+
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+
+            color: #aaa;
+
+            font-size: 15px;
+
+            line-height: 1.5;
         }
 
         input {
+
             width: 100%;
-            padding: 10px;
-            margin-top: 10px;
+
+            padding: 16px;
+
+            margin-bottom: 18px;
+
             border: none;
-            border-radius: 8px;
+
+            border-radius: 12px;
+
+            background: #2d2d2d;
+
+            color: white;
+
+            font-size: 16px;
+
+            outline: none;
+
+            transition: 0.3s;
+        }
+
+        input:focus {
+
+            border: 1px solid crimson;
+
+            box-shadow:
+                0 0 12px rgba(220, 20, 60, 0.4);
         }
 
         button {
-            margin-top: 20px;
+
             width: 100%;
-            padding: 10px;
-            background: gold;
+
+            padding: 16px;
+
             border: none;
-            border-radius: 8px;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(135deg,
+                    gold,
+                    #ffcf33);
+
+            color: black;
+
+            font-size: 16px;
+
             font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
         }
 
+        button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .links {
+
+            margin-top: 22px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+            text-align: center;
+        }
+
+        .links a {
+
+            color: #bbb;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            transition: 0.3s;
+        }
+
+        .links a:hover {
+
+            color: gold;
+        }
+
+        @media(max-width:500px) {
+
+            .login-box {
+
+                padding: 30px 25px;
+            }
+
+            .logo h1 {
+
+                font-size: 30px;
+            }
+        }
     </style>
 
 </head>
@@ -51,29 +198,52 @@
 
     <div class="login-box">
 
-        <h2>🔐 Admin Login</h2>
+        <div class="logo">
+
+            <h1>
+                🏆 Fantawrestling
+            </h1>
+
+            <p>
+                Accedi al pannello admin
+                per gestire cards,
+                match e classifiche live.
+            </p>
+
+        </div>
 
         <form method="POST">
 
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-            >
+            <input type="text" name="username" placeholder="👤 Username" required>
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-            >
+            <input type="password" name="password" placeholder="🔒 Password" required>
 
             <button type="submit">
-                LOGIN
+
+                🚀 LOGIN ADMIN
+
             </button>
 
         </form>
 
+        <div class="links">
+
+            <a href="/forgot_password">
+
+                🔑 Password dimenticata?
+
+            </a>
+
+            <a href="/">
+
+                ← Torna alla Home
+
+            </a>
+
+        </div>
+
     </div>
 
 </body>
+
 </html>
