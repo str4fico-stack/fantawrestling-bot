@@ -954,22 +954,7 @@ with app.app_context():
 
     db.create_all()
 
-    if not User.query.filter_by(username="admin").first():
 
-        admin = User(
-            username="Str4fico",
-            email="str4fico@gmail.com",
-            password=generate_password_hash("CiroVanni86"),
-            is_admin=True
-        )
-
-        db.session.add(admin)
-
-        db.session.commit()
-
-        print("ADMIN CREATO")
-
-    db.create_all()
 
 if __name__ == "__main__":
 
