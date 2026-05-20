@@ -54,10 +54,17 @@ app.config[
 
 app.config[
     "MAIL_PASSWORD"
-] = "rvgi pcdr lawb ojqt"
+] = "rvgipcdrlawbojqt"
 
 mail = Mail(app)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+
+import os
+
+app.config[
+    "SQLALCHEMY_DATABASE_URI"
+] = os.environ.get(
+    "DATABASE_URL"
+)
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -218,6 +225,24 @@ class Pronostico(db.Model):
         default=0
     )
 
+class ResetRequest(db.Model):
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    email = db.Column(
+        db.String(120)
+    )
+
+    contatto = db.Column(
+        db.String(120)
+    )
+
+    token = db.Column(
+        db.String(300)
+    )
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -406,51 +431,40 @@ def forgot_password():
 
         email = request.form["email"]
 
+        contatto = request.form[
+            "contatto"
+        ]
+
         user = User.query.filter_by(
             email=email
         ).first()
 
         if user:
 
-            token = secrets.token_hex(32)
+            token = str(uuid.uuid4())
 
             user.reset_token = token
 
+            richiesta = ResetRequest(
+
+                email=email,
+
+                contatto=contatto,
+
+                token=token
+            )
+
+            db.session.add(richiesta)
+
             db.session.commit()
 
-            link = url_for(
-                "reset_password",
-                token=token,
-                _external=True
-            )
-
-            msg = Message(
-                "Reset Password Fantawrestling",
-                sender=app.config[
-                    "MAIL_USERNAME"
-                ],
-                recipients=[email]
-            )
-
-            msg.body = f"""
-Recupero Password Fantawrestling
-
-Apri questo link:
-
-{link}
-"""
-
-            mail.send(msg)
-
             flash(
-                "📧 Email inviata"
+                "✅ Richiesta inviata all'amministratore"
             )
 
             return redirect(
                 url_for("user_login")
             )
-
-        flash("❌ Email non trovata")
 
     return render_template(
         "forgot_password.html"
@@ -863,6 +877,18 @@ def pronostici(card_id):
         "pronostici.html",
         user=user,
         card=card
+    )
+
+@app.route("/admin/reset_requests")
+@login_required
+@admin_required
+def admin_reset_requests():
+
+    richieste = ResetRequest.query.all()
+
+    return render_template(
+        "admin_reset_requests.html",
+        richieste=richieste
     )
 
 @app.route("/risultati_match/<match_id>", methods=["GET", "POST"])
