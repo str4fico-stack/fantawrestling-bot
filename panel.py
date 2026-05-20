@@ -958,6 +958,7 @@ with app.app_context():
 
         admin = User(
             username="Str4fico",
+            email="str4fico@gmail.com",
             password=generate_password_hash("CiroVanni86"),
             is_admin=True
         )
