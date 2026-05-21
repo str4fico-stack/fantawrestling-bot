@@ -1160,34 +1160,6 @@ def cambia_password():
         "cambia_password.html"
     )
 
-with app.app_context():
-
-    admin_exists = User.query.filter_by(
-        username="Str4fico"
-    ).first()
-
-    if not admin_exists:
-
-        nuovo_admin = User(
-
-            username="Str4fico",
-
-            email="str4fico@gmail.com",
-
-            password=generate_password_hash(
-                "CiroVanni86"
-            ),
-
-            is_admin=True,
-
-            punti=0
-        )
-
-        db.session.add(nuovo_admin)
-
-        db.session.commit()
-
-        print("✅ Admin creato")
 
 if __name__ == "__main__":
 
