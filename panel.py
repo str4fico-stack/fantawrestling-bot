@@ -149,6 +149,11 @@ class User(UserMixin, db.Model):
         nullable=False
     )
 
+    reset_token = db.Column(
+    db.String(200),
+    nullable=True
+    )
+
     punti = db.Column(
         db.Integer,
         default=0
@@ -1024,10 +1029,10 @@ with app.app_context():
 
             username="Str4fico",
 
-            email="str4fico@gmail.com",
+            email="tuaemail@gmail.com",
 
             password=generate_password_hash(
-                "Cirovanni86"
+                "admin123"
             ),
 
             is_admin=True,
