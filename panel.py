@@ -1019,32 +1019,73 @@ with app.app_context():
 
 with app.app_context():
 
-    admin_exists = User.query.filter_by(
-        username="Str4fico"
-    ).first()
+@app.route(
+    "/cambia_password",
+    methods=["GET", "POST"]
+)
+@login_required
+def cambia_password():
 
-    if not admin_exists:
+    if request.method == "POST":
 
-        nuovo_admin = User(
+        password_attuale = request.form[
+            "password_attuale"
+        ]
 
-            username="Str4fico",
+        nuova_password = request.form[
+            "nuova_password"
+        ]
 
-            email="tuaemail@gmail.com",
+        conferma_password = request.form[
+            "conferma_password"
+        ]
 
-            password=generate_password_hash(
-                "admin123"
-            ),
+        # controlla password attuale
 
-            is_admin=True,
+        if not check_password_hash(
+            current_user.password,
+            password_attuale
+        ):
 
-            punti=0
+            flash(
+                "❌ Password attuale errata"
+            )
+
+            return redirect(
+                url_for("cambia_password")
+            )
+
+        # controlla conferma
+
+        if nuova_password != conferma_password:
+
+            flash(
+                "❌ Le password non coincidono"
+            )
+
+            return redirect(
+                url_for("cambia_password")
+            )
+
+        # salva nuova password
+
+        current_user.password = generate_password_hash(
+            nuova_password
         )
-
-        db.session.add(nuovo_admin)
 
         db.session.commit()
 
-        print("✅ Admin creato")
+        flash(
+            "✅ Password aggiornata"
+        )
+
+        return redirect(
+            url_for("profilo")
+        )
+
+    return render_template(
+        "cambia_password.html"
+    )
 
 if __name__ == "__main__":
 
