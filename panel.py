@@ -156,7 +156,8 @@ class User(UserMixin, db.Model):
     pronostici = db.relationship(
     "Pronostico",
     backref="user",
-    lazy=True
+    lazy=True,
+    cascade="all, delete"
 )
 class Match(db.Model):
 
@@ -201,10 +202,16 @@ class Match(db.Model):
     pronostici = db.relationship(
     "Pronostico",
     backref="match",
-    lazy=True
+    lazy=True,
+    cascade="all, delete"
 )
     
 class Pronostico(db.Model):
+
+    bonus = db.Column(
+        db.Boolean,
+        default=False
+    )
 
     id = db.Column(
         db.Integer,
@@ -357,6 +364,41 @@ def make_admin(user_id):
 
     flash(
         "👑 Utente promosso admin"
+    )
+
+    return redirect(
+        url_for("admin_users")
+    )
+
+@app.route("/elimina_utente/<int:user_id>")
+@login_required
+@admin_required
+def elimina_utente(user_id):
+
+    user = User.query.get(user_id)
+
+    if not user:
+
+        return "Utente non trovato"
+
+    # impedisce auto-eliminazione admin
+
+    if user.id == current_user.id:
+
+        flash(
+            "❌ Non puoi eliminare te stesso"
+        )
+
+        return redirect(
+            url_for("admin_users")
+        )
+
+    db.session.delete(user)
+
+    db.session.commit()
+
+    flash(
+        "🗑️ Utente eliminato"
     )
 
     return redirect(
@@ -634,6 +676,15 @@ def aggiungi_match(card_id):
         nuovo_match = Match(
 
             nome=request.form["nome"],
+
+            domanda1=request.form["domanda1"],
+
+            risposte1=request.form["risposte1"],
+
+            domanda2=request.form["domanda2"],
+
+            risposte2=request.form["risposte2"],
+
             card_id=card_id
         )
 
@@ -751,10 +802,7 @@ def user_login():
 
              login_user(user)
 
-             if user.is_admin:
-                return redirect(
-                    url_for("home"),
-                )
+              
              return redirect(
                 url_for("dashboard_user"),
             )
@@ -807,23 +855,31 @@ def pronostici(card_id):
     user = current_user
 
     card = Card.query.get(card_id)
-    
+
+    if not card:
+
+        return "Card non trovata"
+
+    if not card.chiusura:
+
+        return "Card senza data di chiusura"
+
     try:
 
         chiusura = datetime.strptime(
-           card.chiusura,
-           "%d/%m/%Y %H:%M"
-    )
-
-        if datetime.now() > chiusura:
-
-           return "Pronostici chiusi"
+            card.chiusura,
+            "%d/%m/%Y %H:%M"
+        )
 
     except:
 
         return "Formato data card non valido"
 
     if request.method == "POST":
+
+        bonus_match = request.form.get(
+            "bonus_match"
+        )
 
         for match in card.match:
 
@@ -834,40 +890,53 @@ def pronostici(card_id):
             risposta2 = request.form.get(
                 f"risposta2_{match.id}"
             )
-            
+
+            bonus = False
+
+            if bonus_match == str(match.id):
+
+                bonus = True
+
             pronostico_esistente = Pronostico.query.filter_by(
-
                 user_id=user.id,
-
                 match_id=match.id
-
             ).first()
 
             if pronostico_esistente:
-                flash("⚠️ Pronostico già presente per questo match.")
 
-                continue
-            nuovo_pronostico = Pronostico(
+                pronostico_esistente.risposta1 = risposta1
 
-                user_id=user.id,
+                pronostico_esistente.risposta2 = risposta2
 
-                match_id=match.id,
+                pronostico_esistente.bonus = bonus
 
-                risposta1=risposta1,
+            else:
 
-                risposta2=risposta2
-            )
+                nuovo_pronostico = Pronostico(
 
-            db.session.add(nuovo_pronostico)
+                    user_id=user.id,
+
+                    match_id=match.id,
+
+                    risposta1=risposta1,
+
+                    risposta2=risposta2,
+
+                    bonus=bonus
+                )
+
+                db.session.add(
+                    nuovo_pronostico
+                )
 
         db.session.commit()
 
         flash("✅ Pronostici salvati!")
-        
+
         return redirect(
             url_for("dashboard_user")
         )
-    
+
     return render_template(
         "pronostici.html",
         user=user,
@@ -900,33 +969,33 @@ def risultati_match(match_id):
         match.risultato2 = request.form["risultato2"]
         
         pronostici = Pronostico.query.filter_by(
-    
-        match_id=match.id
-    
+            match_id=match.id
         ).all()
 
         for pronostico in pronostici:
-
             punti = 0
 
-            if pronostico.risposta1 == match.risultato1:
+            corretto1 = pronostico.risposta1 == match.risultato1
+            corretto2 = pronostico.risposta2 == match.risultato2
 
-                punti += 1
-
-            if pronostico.risposta2 == match.risultato2:
-
-                punti += 1
+            if pronostico.bonus:
+                if corretto1 and corretto2:
+                    punti = 4
+                else:
+                    punti = 0
+            else:
+                if corretto1:
+                    punti += 1
+                if corretto2:
+                    punti += 1
 
             vecchi_punti = pronostico.punti
-
             pronostico.punti = punti
 
-            user = User.query.get(
-                pronostico.user_id
-            )
-
+            user = User.query.get(pronostico.user_id)
             user.punti -= vecchi_punti
             user.punti += punti
+
         db.session.commit()
         send_telegram_message(
              f"✅ Risultati aggiornati per il match:\n\n🎯 {match.nome}"
@@ -943,7 +1012,34 @@ with app.app_context():
 
     db.create_all()
 
+with app.app_context():
 
+    admin_exists = User.query.filter_by(
+        username="admin"
+    ).first()
+
+    if not admin_exists:
+
+        nuovo_admin = User(
+
+            username="Str4fico",
+
+            email="Str4fico@gmail.com",
+
+            password=generate_password_hash(
+                "CiroVanni86"
+            ),
+
+            is_admin=True,
+
+            punti=0
+        )
+
+        db.session.add(nuovo_admin)
+
+        db.session.commit()
+
+        print("✅ Admin creato")
 
 if __name__ == "__main__":
 

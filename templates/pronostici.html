@@ -41,8 +41,6 @@
             margin: auto;
         }
 
-        /* HEADER */
-
         .header {
 
             margin-bottom: 40px;
@@ -64,8 +62,6 @@
             font-size: 18px;
         }
 
-        /* MATCH BOX */
-
         .match-box {
 
             background:
@@ -80,18 +76,6 @@
             border: 1px solid #333;
 
             margin-bottom: 25px;
-
-            transition: 0.3s;
-
-            box-shadow:
-                0 0 18px rgba(0, 0, 0, 0.35);
-        }
-
-        .match-box:hover {
-
-            border-color: crimson;
-
-            transform: translateY(-2px);
         }
 
         .match-title {
@@ -104,8 +88,6 @@
 
             font-weight: bold;
         }
-
-        /* QUESTIONS */
 
         .question {
 
@@ -142,16 +124,6 @@
             font-size: 16px;
 
             outline: none;
-
-            transition: 0.3s;
-        }
-
-        select:focus {
-
-            border: 1px solid crimson;
-
-            box-shadow:
-                0 0 10px rgba(220, 20, 60, 0.4);
         }
 
         option {
@@ -159,7 +131,40 @@
             background: #1f1f1f;
         }
 
-        /* BUTTON */
+        .bonus-box {
+
+            margin-top: 25px;
+
+            background: #2b1d00;
+
+            border: 1px solid gold;
+
+            border-radius: 16px;
+
+            padding: 18px;
+        }
+
+        .bonus-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            color: gold;
+        }
+
+        .bonus-label input {
+
+            width: 20px;
+
+            height: 20px;
+        }
 
         .submit-btn {
 
@@ -184,52 +189,7 @@
 
             cursor: pointer;
 
-            transition: 0.3s;
-
             margin-top: 15px;
-        }
-
-        .submit-btn:hover {
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 0 18px rgba(255, 0, 80, 0.3);
-        }
-
-        /* BACK */
-
-        .back {
-
-            display: inline-block;
-
-            margin-top: 25px;
-
-            color: #bbb;
-
-            text-decoration: none;
-
-            transition: 0.3s;
-        }
-
-        .back:hover {
-
-            color: gold;
-        }
-
-        /* MOBILE */
-
-        @media(max-width:700px) {
-
-            .header h1 {
-
-                font-size: 34px;
-            }
-
-            .match-title {
-
-                font-size: 24px;
-            }
         }
     </style>
 
@@ -239,8 +199,6 @@
 
     <div class="container">
 
-        <!-- HEADER -->
-
         <div class="header">
 
             <h1>
@@ -249,8 +207,8 @@
 
             <p>
 
-                Inserisci i tuoi pronostici
-                per l’evento WWE.
+                Inserisci i tuoi pronostici WWE.
+                Puoi usare il BONUS su un solo match.
 
             </p>
 
@@ -274,7 +232,7 @@
 
                     <label>
 
-                        {{ match.domanda1 or "Chi vincerà il match?" }}
+                        {{ match.domanda1 }}
 
                     </label>
 
@@ -284,13 +242,17 @@
                             Seleziona risposta
                         </option>
 
-                        {% for risposta in match.risposte1.split(',') %}
+                        {% for risposta in (match.risposte1 or '').split(',') %}
+
+                        {% if risposta.strip() %}
 
                         <option value="{{ risposta.strip() }}">
 
                             {{ risposta.strip() }}
 
                         </option>
+
+                        {% endif %}
 
                         {% endfor %}
 
@@ -316,13 +278,17 @@
                             Seleziona risposta
                         </option>
 
-                        {% for risposta in match.risposte2.split(',') %}
+                        {% for risposta in (match.risposte2 or '').split(',') %}
+
+                        {% if risposta.strip() %}
 
                         <option value="{{ risposta.strip() }}">
 
                             {{ risposta.strip() }}
 
                         </option>
+
+                        {% endif %}
 
                         {% endfor %}
 
@@ -331,6 +297,20 @@
                 </div>
 
                 {% endif %}
+
+                <!-- BONUS -->
+
+                <div class="bonus-box">
+
+                    <label class="bonus-label">
+
+                        <input type="radio" name="bonus_match" value="{{ match.id }}">
+
+                        ⭐ Attiva BONUS su questo match
+
+                    </label>
+
+                </div>
 
             </div>
 
@@ -343,12 +323,6 @@
             </button>
 
         </form>
-
-        <a href="/dashboard_user" class="back">
-
-            ← Torna alla Dashboard
-
-        </a>
 
     </div>
 

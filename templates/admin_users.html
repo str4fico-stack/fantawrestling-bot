@@ -10,43 +10,254 @@
     <title>Gestione Utenti</title>
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
 
-            background: #111;
+            background:
+                linear-gradient(135deg,
+                    #111,
+                    #1c1c1c);
 
             color: white;
 
             font-family: Arial;
 
-            padding: 20px;
+            min-height: 100vh;
+
+            padding: 30px;
         }
 
-        .user {
+        .container {
 
-            background: #1f1f1f;
+            max-width: 1200px;
 
-            padding: 20px;
-
-            border-radius: 16px;
-
-            margin-bottom: 15px;
+            margin: auto;
         }
 
-        button {
+        .header {
 
-            background: crimson;
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 20px;
+
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+
+            color: gold;
+
+            font-size: 42px;
+        }
+
+        .back-btn {
+
+            background: #333;
 
             color: white;
 
+            text-decoration: none;
+
+            padding: 14px 18px;
+
+            border-radius: 12px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+
+            background: #444;
+        }
+
+        .users-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(320px, 1fr));
+
+            gap: 20px;
+        }
+
+        .user-card {
+
+            background:
+                linear-gradient(135deg,
+                    #1f1f1f,
+                    #2a2a2a);
+
+            border: 1px solid #333;
+
+            border-radius: 24px;
+
+            padding: 25px;
+
+            transition: 0.3s;
+        }
+
+        .user-card:hover {
+
+            border-color: gold;
+
+            transform: translateY(-2px);
+        }
+
+        .username {
+
+            font-size: 28px;
+
+            color: white;
+
+            margin-bottom: 12px;
+
+            font-weight: bold;
+        }
+
+        .email {
+
+            color: #bbb;
+
+            margin-bottom: 12px;
+
+            word-break: break-word;
+        }
+
+        .points {
+
+            color: gold;
+
+            font-size: 18px;
+
+            margin-bottom: 18px;
+
+            font-weight: bold;
+        }
+
+        .role {
+
+            display: inline-block;
+
+            padding: 8px 14px;
+
+            border-radius: 10px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            margin-bottom: 20px;
+        }
+
+        .admin {
+
+            background: gold;
+
+            color: black;
+        }
+
+        .player {
+
+            background: #333;
+
+            color: white;
+        }
+
+        .buttons {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+        .btn {
+
             border: none;
 
-            padding: 10px 14px;
+            padding: 12px 16px;
 
             border-radius: 10px;
 
             cursor: pointer;
 
-            margin-top: 10px;
+            font-weight: bold;
+
+            text-decoration: none;
+
+            transition: 0.3s;
+
+            display: inline-block;
+
+            text-align: center;
+        }
+
+        .btn:hover {
+
+            transform: translateY(-2px);
+        }
+
+        .btn-admin {
+
+            background: gold;
+
+            color: black;
+        }
+
+        .btn-points {
+
+            background: #2196f3;
+
+            color: white;
+        }
+
+        .btn-delete {
+
+            background: crimson;
+
+            color: white;
+        }
+
+        .empty {
+
+            background: #1f1f1f;
+
+            padding: 30px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            color: #bbb;
+
+            font-size: 20px;
+        }
+
+        @media(max-width:700px) {
+
+            .header h1 {
+
+                font-size: 34px;
+            }
+
+            .username {
+
+                font-size: 24px;
+            }
         }
     </style>
 
@@ -54,119 +265,118 @@
 
 <body>
 
-    <h1>
-        👥 Gestione Utenti
-    </h1>
+    <div class="container">
 
-    {% for user in users %}
+        <!-- HEADER -->
 
-    <div class="user">
+        <div class="header">
 
-        <h2>
-            {{ user.username }}
-        </h2>
+            <h1>
+                👥 Gestione Utenti
+            </h1>
 
-        <p>
-            📧 {{ user.email }}
-        </p>
+            <a href="/dashboard" class="back-btn">
 
-        <p>
+                ← Torna al Dashboard
 
-            {% if user.is_admin %}
+            </a>
 
-            👑 Admin
+        </div>
 
-            {% else %}
+        <!-- USERS -->
 
-            👤 Utente
+        {% if users %}
 
-            {% endif %}
+        <div class="users-grid">
 
-        </p>
+            {% for user in users %}
 
-        {% if not user.is_admin %}
+            <div class="user-card">
 
-        <a href="/make_admin/{{ user.id }}">
+                <div class="username">
 
-            <button>
+                    {{ user.username }}
 
-                👑 Rendi Admin
+                </div>
 
-            </button>
+                <div class="email">
 
-        </a>
+                    📧 {{ user.email }}
+
+                </div>
+
+                <div class="points">
+
+                    🏆 {{ user.punti }} punti
+
+                </div>
+
+                {% if user.is_admin %}
+
+                <div class="role admin">
+
+                    👑 ADMIN
+
+                </div>
+
+                {% else %}
+
+                <div class="role player">
+
+                    🎮 GIOCATORE
+
+                </div>
+
+                {% endif %}
+
+                <div class="buttons">
+
+                    {% if not user.is_admin %}
+
+                    <a href="/make_admin/{{ user.id }}" class="btn btn-admin">
+
+                        👑 Rendi Admin
+
+                    </a>
+
+                    {% endif %}
+
+                    <a href="/modifica_punti/{{ user.id }}" class="btn btn-points">
+
+                        🏆 Modifica Punti
+
+                    </a>
+
+                    {% if user.id != current_user.id %}
+
+                    <a href="/elimina_utente/{{ user.id }}" class="btn btn-delete"
+                        onclick="return confirm('Vuoi eliminare questo utente?')">
+
+                        🗑️ Elimina
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+
+            Nessun utente trovato.
+
+        </div>
 
         {% endif %}
 
-        <div class="box">
-
-            <h3>
-                {{ user.username }}
-            </h3>
-
-            <p>
-                📧 {{ user.email }}
-            </p>
-
-            <p>
-                🏆 {{ user.punti }} pt
-            </p>
-
-            <a href="{{ url_for('modifica_punti', user_id=user.id) }}">
-
-                <button style="
-                    background:crimson;
-                    color:white;
-                    border:none;
-                    padding:10px 14px;
-                    border-radius:10px;
-                    cursor:pointer;
-                    margin-top:10px;
-                ">
-
-                    🏆 Modifica Punti
-
-                </button>
-
-            </a>
-
-
-            {% if not user.is_admin %}
-
-            <a href="{{ url_for('make_admin', user_id=user.id) }}">
-
-                <button style="
-            background:gold;
-            color:black;
-            border:none;
-            padding:10px 14px;
-            border-radius:10px;
-            cursor:pointer;
-            margin-top:10px;
-            font-weight:bold;
-        ">
-
-                    👑 Rendi Admin
-
-                </button>
-
-            </a>
-
-            {% else %}
-
-            <p style="
-        color:gold;
-        margin-top:10px;
-    ">
-
-                👑 Già Admin
-
-            </p>
-
-            {% endif %}
-        </div>
-
-        {% endfor %}
+    </div>
 
 </body>
 

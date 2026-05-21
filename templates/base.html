@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        {% block title %}
+        Fantawrestling
+        {% endblock %}
+
+    </title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+
+            background:
+                linear-gradient(135deg,
+                    #111,
+                    #1a1a1a);
+
+            color: white;
+
+            font-family: Arial;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        main {
+
+            flex: 1;
+
+            padding: 25px;
+        }
+
+        /* FOOTER */
+
+        footer {
+
+            margin-top: 60px;
+
+            padding: 30px 20px;
+
+            border-top: 1px solid #333;
+
+            text-align: center;
+        }
+
+        footer h3 {
+
+            color: gold;
+
+            margin-bottom: 20px;
+
+            font-size: 22px;
+        }
+
+        .socials {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 20px;
+
+            flex-wrap: wrap;
+        }
+
+        .socials img {
+
+            width: 45px;
+
+            transition: 0.3s;
+        }
+
+        .socials img:hover {
+
+            transform: scale(1.12);
+        }
+
+        .copyright {
+
+            margin-top: 25px;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <h3>
+            🌍 Seguici sui Social
+        </h3>
+
+        <div class="socials">
+
+            <!-- INSTAGRAM -->
+
+            <a href="https://instagram.com/parrucco_tv_wrestling" target="_blank">
+
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" style="
+                        filter:drop-shadow(
+                            0 0 6px rgba(255,0,120,0.5)
+                        );
+                    ">
+
+            </a>
+
+            <!-- TIKTOK -->
+
+            <a href="https://tiktok.com/@parruccotv " target="_blank">
+
+                <img src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png" style="
+                        filter:drop-shadow(
+                            0 0 6px rgba(0,255,255,0.4)
+                        );
+                    ">
+
+            </a>
+
+            <!-- TWITCH -->
+
+            <a href="https://twitch.tv/parruccotv" target="_blank">
+
+                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968819.png" style="
+                        filter:drop-shadow(
+                            0 0 6px rgba(170,70,255,0.5)
+                        );
+                    ">
+
+            </a>
+
+            <!-- TELEGRAM -->
+
+            <a href="https://t.me/+9YIsjlT5PqI3OGM0" target="_blank">
+
+                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" style="
+                        filter:drop-shadow(
+                            0 0 6px rgba(0,180,255,0.5)
+                        );
+                    ">
+
+            </a>
+
+        </div>
+
+        <div class="copyright">
+
+            © 2026 Fantawrestling —
+            Tutti i diritti riservati
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
