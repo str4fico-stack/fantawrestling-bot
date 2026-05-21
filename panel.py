@@ -312,7 +312,7 @@ def reset_password(token):
 
     if not user:
 
-        return "Token non valido"
+        return "❌ Token non valido"
 
     if request.method == "POST":
 
@@ -327,9 +327,6 @@ def reset_password(token):
         user.reset_token = None
 
         db.session.commit()
-        send_telegram_message(
-             f"🔥 Nuova card disponibile!\n\n🏆 {nuova_card.nome}\n\n⏰ Chiusura: {nuova_card.chiusura}"
-        )
 
         flash(
             "✅ Password aggiornata"
@@ -340,9 +337,8 @@ def reset_password(token):
         )
 
     return render_template(
-        "reset_password.html"
+        "reset_password_form.html"
     )
-    
 
 @app.route("/admin/users")
 @login_required
