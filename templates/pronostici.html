@@ -1,314 +1,391 @@
-<!DOCTYPE html>
-<html lang="it">
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+Pronostici
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    .container {
 
-    <title>Pronostici</title>
+        max-width: 1200px;
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        margin: auto;
+    }
 
-        body {
+    .header {
 
-            background:
-                linear-gradient(135deg,
-                    #0f0f0f,
-                    #1b1b1b);
+        margin-bottom: 40px;
+    }
 
-            color: white;
+    .header h1 {
 
-            font-family: Arial;
+        color: gold;
 
-            min-height: 100vh;
+        font-size: 42px;
 
-            padding: 25px;
-        }
+        margin-bottom: 12px;
+    }
 
-        .container {
+    .header p {
 
-            width: 100%;
+        color: #aaa;
 
-            max-width: 1000px;
+        font-size: 18px;
+    }
 
-            margin: auto;
-        }
+    .bonus-box {
 
-        .header {
+        background:
+            linear-gradient(135deg,
+                gold,
+                #ffcf33);
 
-            margin-bottom: 40px;
-        }
+        color: black;
+
+        padding: 20px;
+
+        border-radius: 18px;
+
+        margin-bottom: 35px;
+
+        font-weight: bold;
+
+        box-shadow:
+            0 0 20px rgba(255, 215, 0, 0.25);
+    }
+
+    .bonus-box p {
+
+        margin-top: 10px;
+
+        line-height: 1.6;
+    }
+
+    .match-grid {
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(auto-fit, minmax(340px, 1fr));
+
+        gap: 25px;
+    }
+
+    .match-card {
+
+        background:
+            linear-gradient(135deg,
+                #1e1e1e,
+                #262626);
+
+        border: 1px solid #333;
+
+        border-radius: 24px;
+
+        overflow: hidden;
+
+        transition: 0.3s;
+
+        box-shadow:
+            0 0 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .match-card:hover {
+
+        transform: translateY(-3px);
+
+        border-color: crimson;
+    }
+
+    .match-image {
+
+        width: 100%;
+
+        height: 220px;
+
+        object-fit: cover;
+    }
+
+    .match-content {
+
+        padding: 25px;
+    }
+
+    .match-title {
+
+        font-size: 28px;
+
+        font-weight: bold;
+
+        margin-bottom: 25px;
+    }
+
+    .question {
+
+        margin-bottom: 18px;
+    }
+
+    .question p {
+
+        color: #bbb;
+
+        margin-bottom: 10px;
+
+        font-size: 15px;
+    }
+
+    select {
+
+        width: 100%;
+
+        padding: 14px;
+
+        border: none;
+
+        border-radius: 12px;
+
+        background: #2d2d2d;
+
+        color: white;
+
+        font-size: 15px;
+
+        outline: none;
+    }
+
+    .bonus-select {
+
+        margin-top: 25px;
+
+        background: #2d2d2d;
+
+        padding: 15px;
+
+        border-radius: 14px;
+
+        border: 1px solid #444;
+    }
+
+    .bonus-select label {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+
+        cursor: pointer;
+
+        font-weight: bold;
+    }
+
+    .bonus-select input {
+
+        transform: scale(1.3);
+    }
+
+    .submit-box {
+
+        margin-top: 40px;
+
+        text-align: center;
+    }
+
+    .submit-btn {
+
+        border: none;
+
+        padding: 18px 30px;
+
+        border-radius: 16px;
+
+        background:
+            linear-gradient(135deg,
+                crimson,
+                #ff2f5b);
+
+        color: white;
+
+        font-size: 18px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+
+        transform: translateY(-2px);
+
+        box-shadow:
+            0 0 15px rgba(220, 20, 60, 0.35);
+    }
+
+    @media(max-width:700px) {
 
         .header h1 {
 
-            color: gold;
-
-            font-size: 42px;
-
-            margin-bottom: 12px;
-        }
-
-        .header p {
-
-            color: #aaa;
-
-            font-size: 18px;
-        }
-
-        .match-box {
-
-            background:
-                linear-gradient(135deg,
-                    #1d1d1d,
-                    #282828);
-
-            padding: 28px;
-
-            border-radius: 24px;
-
-            border: 1px solid #333;
-
-            margin-bottom: 25px;
+            font-size: 34px;
         }
 
         .match-title {
 
-            color: white;
-
-            font-size: 28px;
-
-            margin-bottom: 25px;
-
-            font-weight: bold;
+            font-size: 24px;
         }
+    }
+</style>
 
-        .question {
+<div class="container">
 
-            margin-bottom: 25px;
-        }
+    <!-- HEADER -->
 
-        .question label {
+    <div class="header">
 
-            display: block;
+        <h1>
+            🎮 Pronostici {{ card.nome }}
+        </h1>
 
-            margin-bottom: 12px;
+        <p>
 
-            color: #ddd;
+            Seleziona i tuoi pronostici
+            e scegli un solo Bonus Match.
 
-            font-weight: bold;
+        </p>
 
-            font-size: 16px;
-        }
+    </div>
 
-        select {
+    <!-- BONUS INFO -->
 
-            width: 100%;
+    <div class="bonus-box">
 
-            padding: 16px;
+        ⭐ BONUS MATCH
 
-            border: none;
+        <p>
 
-            border-radius: 14px;
+            Il bonus può essere usato
+            su un solo match.
 
-            background: #2c2c2c;
+            <br><br>
 
-            color: white;
+            ✅ Entrambe corrette = 4 punti
 
-            font-size: 16px;
+            <br>
 
-            outline: none;
-        }
+            ❌ Una sbagliata = 0 punti
 
-        option {
+        </p>
 
-            background: #1f1f1f;
-        }
+    </div>
 
-        .bonus-box {
+    <!-- FORM -->
 
-            margin-top: 25px;
+    <form method="POST">
 
-            background: #2b1d00;
-
-            border: 1px solid gold;
-
-            border-radius: 16px;
-
-            padding: 18px;
-        }
-
-        .bonus-label {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            cursor: pointer;
-
-            font-weight: bold;
-
-            color: gold;
-        }
-
-        .bonus-label input {
-
-            width: 20px;
-
-            height: 20px;
-        }
-
-        .submit-btn {
-
-            width: 100%;
-
-            padding: 18px;
-
-            border: none;
-
-            border-radius: 18px;
-
-            background:
-                linear-gradient(135deg,
-                    crimson,
-                    #ff2f5b);
-
-            color: white;
-
-            font-size: 18px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-
-            margin-top: 15px;
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <div class="container">
-
-        <div class="header">
-
-            <h1>
-                🎮 {{ card.nome }}
-            </h1>
-
-            <p>
-
-                Inserisci i tuoi pronostici WWE.
-                Puoi usare il BONUS su un solo match.
-
-            </p>
-
-        </div>
-
-        <form method="POST">
+        <div class="match-grid">
 
             {% for match in card.match %}
 
-            <div class="match-box">
+            <div class="match-card">
 
-                <div class="match-title">
+                {% if match.immagine %}
 
-                    🏆 {{ match.nome }}
-
-                </div>
-
-                <!-- DOMANDA 1 -->
-
-                <div class="question">
-
-                    <label>
-
-                        {{ match.domanda1 }}
-
-                    </label>
-
-                    <select name="risposta1_{{ match.id }}" required>
-
-                        <option value="">
-                            Seleziona risposta
-                        </option>
-
-                        {% for risposta in (match.risposte1 or '').split(',') %}
-
-                        {% if risposta.strip() %}
-
-                        <option value="{{ risposta.strip() }}">
-
-                            {{ risposta.strip() }}
-
-                        </option>
-
-                        {% endif %}
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
-
-                <!-- DOMANDA 2 -->
-
-                {% if match.domanda2 %}
-
-                <div class="question">
-
-                    <label>
-
-                        {{ match.domanda2 }}
-
-                    </label>
-
-                    <select name="risposta2_{{ match.id }}">
-
-                        <option value="">
-                            Seleziona risposta
-                        </option>
-
-                        {% for risposta in (match.risposte2 or '').split(',') %}
-
-                        {% if risposta.strip() %}
-
-                        <option value="{{ risposta.strip() }}">
-
-                            {{ risposta.strip() }}
-
-                        </option>
-
-                        {% endif %}
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
+                <img src="{{ match.immagine }}" class="match-image">
 
                 {% endif %}
 
-                <!-- BONUS -->
+                <div class="match-content">
 
-                <div class="bonus-box">
+                    <div class="match-title">
 
-                    <label class="bonus-label">
+                        🎮 {{ match.nome }}
 
-                        <input type="radio" name="bonus_match" value="{{ match.id }}">
+                    </div>
 
-                        ⭐ Attiva BONUS su questo match
+                    <!-- DOMANDA 1 -->
 
-                    </label>
+                    <div class="question">
+
+                        <p>
+
+                            {{ match.domanda1 }}
+
+                        </p>
+
+                        <select name="risposta1_{{ match.id }}" required>
+
+                            <option value="">
+                                Seleziona risposta
+                            </option>
+
+                            {% if match.risposte1 %}
+
+                            {% for risposta in match.risposte1.split(",") %}
+
+                            <option value="{{ risposta.strip() }}">
+
+                                {{ risposta.strip() }}
+
+                            </option>
+
+                            {% endfor %}
+
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- DOMANDA 2 -->
+
+                    <div class="question">
+
+                        <p>
+
+                            {{ match.domanda2 }}
+
+                        </p>
+
+                        <select name="risposta2_{{ match.id }}" required>
+
+                            <option value="">
+                                Seleziona risposta
+                            </option>
+
+                            {% if match.risposte2 %}
+
+                            {% for risposta in match.risposte2.split(",") %}
+
+                            <option value="{{ risposta.strip() }}">
+
+                                {{ risposta.strip() }}
+
+                            </option>
+
+                            {% endfor %}
+
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+
+                    <!-- BONUS -->
+
+                    <div class="bonus-select">
+
+                        <label>
+
+                            <input type="radio" name="bonus_match" value="{{ match.id }}">
+
+                            ⭐ Usa Bonus Match
+
+                        </label>
+
+                    </div>
 
                 </div>
 
@@ -316,16 +393,22 @@
 
             {% endfor %}
 
+        </div>
+
+        <!-- SUBMIT -->
+
+        <div class="submit-box">
+
             <button type="submit" class="submit-btn">
 
                 🚀 SALVA PRONOSTICI
 
             </button>
 
-        </form>
+        </div>
 
-    </div>
+    </form>
 
-</body>
+</div>
 
-</html>
+{% endblock %}

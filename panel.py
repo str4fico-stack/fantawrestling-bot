@@ -189,6 +189,10 @@ class Match(db.Model):
         db.String(100)
     )
 
+    immagine = db.Column(
+    db.String(500)
+    )
+
     domanda1 = db.Column(
         db.String(200)
     )
@@ -717,6 +721,8 @@ def aggiungi_match(card_id):
 
             nome=request.form["nome"],
 
+            immagine = request.form["immagine"]
+
             domanda1=request.form["domanda1"],
 
             risposte1=request.form["risposte1"],
@@ -757,7 +763,10 @@ def elimina_match(card_id, match_id):
 
     return redirect(url_for("home"))
 
-@app.route("/modifica_match/<card_id>/<match_id>", methods=["GET", "POST"])
+@app.route(
+    "/modifica_match/<card_id>/<match_id>",
+    methods=["GET", "POST"]
+)
 @login_required
 @admin_required
 def modifica_match(card_id, match_id):
@@ -768,9 +777,25 @@ def modifica_match(card_id, match_id):
 
         match.nome = request.form["nome"]
 
+        match.immagine = request.form["immagine"]
+
+        match.domanda1 = request.form["domanda1"]
+
+        match.risposte1 = request.form["risposte1"]
+
+        match.domanda2 = request.form["domanda2"]
+
+        match.risposte2 = request.form["risposte2"]
+
         db.session.commit()
 
-        return redirect(url_for("home"))
+        flash(
+            "✅ Match aggiornato"
+        )
+
+        return redirect(
+            url_for("home")
+        )
 
     return render_template(
         "modifica_match.html",

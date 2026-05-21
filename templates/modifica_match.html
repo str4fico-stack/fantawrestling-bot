@@ -1,380 +1,228 @@
-<!DOCTYPE html>
-<html lang="it">
+{% extends "base.html" %}
 
-<head>
+{% block title %}
+Modifica Match
+{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    .match-box {
 
-    <title>Modifica Match</title>
+        max-width: 700px;
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        margin: auto;
 
-        body {
+        margin-top: 50px;
 
-            background:
-                linear-gradient(135deg,
-                    #0f0f0f,
-                    #1b1b1b);
+        background:
+            linear-gradient(135deg,
+                #1e1e1e,
+                #262626);
 
-            color: white;
+        padding: 35px;
 
-            font-family: Arial;
+        border-radius: 22px;
 
-            min-height: 100vh;
+        border: 1px solid #333;
 
-            display: flex;
+        box-shadow:
+            0 0 20px rgba(0, 0, 0, 0.35);
+    }
 
-            justify-content: center;
+    .match-box h1 {
 
-            align-items: center;
+        color: gold;
 
-            padding: 20px;
-        }
+        margin-bottom: 30px;
 
-        .box {
+        font-size: 36px;
+    }
 
-            width: 100%;
+    .preview {
 
-            max-width: 750px;
+        width: 100%;
 
-            background:
-                linear-gradient(135deg,
-                    #1d1d1d,
-                    #282828);
+        height: 220px;
 
-            padding: 40px;
+        object-fit: cover;
 
-            border-radius: 24px;
+        border-radius: 16px;
 
-            border: 1px solid #333;
+        margin-bottom: 25px;
 
-            box-shadow:
-                0 0 25px rgba(0, 0, 0, 0.45);
-        }
+        border: 1px solid #333;
+    }
 
-        h1 {
+    input {
 
-            color: gold;
+        width: 100%;
 
-            margin-bottom: 12px;
+        padding: 15px;
 
-            font-size: 36px;
-        }
+        margin-bottom: 20px;
 
-        .subtitle {
+        border: none;
 
-            color: #aaa;
+        border-radius: 12px;
 
-            margin-bottom: 35px;
+        background: #2d2d2d;
 
-            line-height: 1.5;
-        }
+        color: white;
 
-        .section {
+        font-size: 15px;
 
-            margin-bottom: 30px;
-        }
+        outline: none;
 
-        .section-title {
+        transition: 0.3s;
+    }
 
-            color: crimson;
+    input:focus {
 
-            margin-bottom: 18px;
+        border: 1px solid gold;
 
-            font-size: 20px;
+        box-shadow:
+            0 0 10px rgba(255, 215, 0, 0.3);
+    }
 
-            font-weight: bold;
-        }
+    .label {
 
-        .field {
+        color: #bbb;
 
-            margin-bottom: 20px;
-        }
+        margin-bottom: 10px;
 
-        .field label {
+        font-size: 15px;
+    }
 
-            display: block;
+    button {
 
-            margin-bottom: 10px;
+        width: 100%;
 
-            color: #ddd;
+        padding: 16px;
 
-            font-weight: bold;
-        }
+        border: none;
 
-        input {
+        border-radius: 14px;
 
-            width: 100%;
+        background:
+            linear-gradient(135deg,
+                crimson,
+                #ff2f5b);
 
-            padding: 16px;
+        color: white;
 
-            border: none;
+        font-size: 16px;
 
-            border-radius: 14px;
+        font-weight: bold;
 
-            background: #2d2d2d;
+        cursor: pointer;
 
-            color: white;
+        transition: 0.3s;
+    }
 
-            font-size: 16px;
+    button:hover {
 
-            outline: none;
+        transform: translateY(-2px);
 
-            transition: 0.3s;
-        }
+        box-shadow:
+            0 0 15px rgba(220, 20, 60, 0.3);
+    }
 
-        input:focus {
+    .back-btn {
 
-            border: 1px solid crimson;
+        display: inline-block;
 
-            box-shadow:
-                0 0 12px rgba(220, 20, 60, 0.4);
-        }
+        margin-top: 20px;
 
-        .helper {
+        color: #bbb;
 
-            margin-top: 8px;
+        text-decoration: none;
 
-            color: #888;
+        transition: 0.3s;
+    }
 
-            font-size: 13px;
-        }
+    .back-btn:hover {
 
-        .buttons {
+        color: gold;
+    }
+</style>
 
-            display: flex;
+<div class="match-box">
 
-            gap: 15px;
+    <h1>
+        ✏️ Modifica Match
+    </h1>
 
-            flex-wrap: wrap;
+    {% if match.immagine %}
 
-            margin-top: 15px;
-        }
+    <img src="{{ match.immagine }}" class="preview">
 
-        button {
+    {% endif %}
 
-            flex: 1;
+    <form method="POST">
 
-            min-width: 180px;
+        <div class="label">
 
-            padding: 16px;
-
-            border: none;
-
-            border-radius: 14px;
-
-            cursor: pointer;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-            transition: 0.3s;
-        }
-
-        .save-btn {
-
-            background:
-                linear-gradient(135deg,
-                    crimson,
-                    #ff2f5b);
-
-            color: white;
-        }
-
-        .back-btn {
-
-            background: #2d2d2d;
-
-            color: white;
-        }
-
-        button:hover {
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 0 15px rgba(255, 0, 80, 0.35);
-        }
-
-        .back-link {
-
-            text-decoration: none;
-
-            flex: 1;
-        }
-
-        @media(max-width:650px) {
-
-            .box {
-
-                padding: 30px 22px;
-            }
-
-            h1 {
-
-                font-size: 30px;
-            }
-
-            .buttons {
-
-                flex-direction: column;
-            }
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <div class="box">
-
-        <h1>
-            ✏️ Modifica Match
-        </h1>
-
-        <div class="subtitle">
-
-            Configura domande,
-            risposte e dettagli del match WWE.
+            Nome Match
 
         </div>
 
-        <form method="POST">
+        <input type="text" name="nome" value="{{ match.nome }}" placeholder="Nome Match" required>
 
-            <!-- MATCH -->
+        <div class="label">
 
-            <div class="section">
+            URL Immagine
 
-                <div class="section-title">
+        </div>
 
-                    🎮 Informazioni Match
+        <input type="text" name="immagine" value="{{ match.immagine }}" placeholder="https://...">
 
-                </div>
+        <div class="label">
 
-                <div class="field">
+            Domanda 1
 
-                    <label>
-                        Nome Match
-                    </label>
+        </div>
 
-                    <input type="text" name="nome" value="{{ match.nome }}" placeholder="Roman Reigns vs Cody Rhodes"
-                        required>
+        <input type="text" name="domanda1" value="{{ match.domanda1 }}" placeholder="Domanda 1">
 
-                </div>
+        <div class="label">
 
-            </div>
+            Risposte domanda 1
 
-            <!-- DOMANDA 1 -->
+        </div>
 
-            <div class="section">
+        <input type="text" name="risposte1" value="{{ match.risposte1 }}" placeholder="Risposte separate da virgola">
 
-                <div class="section-title">
+        <div class="label">
 
-                    ❓ Domanda 1
+            Domanda 2
 
-                </div>
+        </div>
 
-                <div class="field">
+        <input type="text" name="domanda2" value="{{ match.domanda2 }}" placeholder="Domanda 2">
 
-                    <label>
-                        Testo domanda
-                    </label>
+        <div class="label">
 
-                    <input type="text" name="domanda1" value="{{ match.domanda1 }}" placeholder="Chi vincerà il match?">
+            Risposte domanda 2
 
-                </div>
+        </div>
 
-                <div class="field">
+        <input type="text" name="risposte2" value="{{ match.risposte2 }}" placeholder="Risposte separate da virgola">
 
-                    <label>
-                        Risposte disponibili
-                    </label>
+        <button type="submit">
 
-                    <input type="text" name="risposte1" value="{{ match.risposte1 }}"
-                        placeholder="Roman Reigns,Cody Rhodes">
+            💾 SALVA MODIFICHE
 
-                    <div class="helper">
+        </button>
 
-                        Separa le risposte con una virgola.
+    </form>
 
-                    </div>
+    <a href="/dashboard" class="back-btn">
 
-                </div>
+        ← Torna al Dashboard
 
-            </div>
+    </a>
 
-            <!-- DOMANDA 2 -->
+</div>
 
-            <div class="section">
-
-                <div class="section-title">
-
-                    ❓ Domanda 2
-
-                </div>
-
-                <div class="field">
-
-                    <label>
-                        Testo domanda
-                    </label>
-
-                    <input type="text" name="domanda2" value="{{ match.domanda2 }}" placeholder="Ci sarà interferenza?">
-
-                </div>
-
-                <div class="field">
-
-                    <label>
-                        Risposte disponibili
-                    </label>
-
-                    <input type="text" name="risposte2" value="{{ match.risposte2 }}" placeholder="Si,No">
-
-                    <div class="helper">
-
-                        Separa le risposte con una virgola.
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- BUTTONS -->
-
-            <div class="buttons">
-
-                <button type="submit" class="save-btn">
-
-                    💾 SALVA MODIFICHE
-
-                </button>
-
-                <a href="/dashboard" class="back-link">
-
-                    <button type="button" class="back-btn">
-
-                        ← TORNA DASHBOARD
-
-                    </button>
-
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</body>
-
-</html>
+{% endblock %}
