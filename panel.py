@@ -483,6 +483,45 @@ def profilo():
 )
 def forgot_password():
 
+    reset_link = None
+
+    if request.method == "POST":
+
+        email = request.form["email"]
+
+        user = User.query.filter_by(
+            email=email
+        ).first()
+
+        if user:
+
+            token = secrets.token_urlsafe(32)
+
+            user.reset_token = token
+
+            db.session.commit()
+
+            reset_link = (
+                f"https://fantawrestling-parruccotv.onrender.com/reset_password/{token}"
+            )
+
+            flash(
+                "✅ Link generato"
+            )
+
+        else:
+
+            flash(
+                "❌ Email non trovata"
+            )
+
+    return render_template(
+        "forgot_password.html",
+        reset_link=reset_link
+    )
+
+def forgot_password():
+
     if request.method == "POST":
 
         email = request.form["email"]
