@@ -717,31 +717,43 @@ def aggiungi_match(card_id):
 
     if request.method == "POST":
 
-        nuovo_match = Match(
+       nome = request.form["nome"]
 
-            nome=request.form["nome"],
+       immagine = request.form["immagine"]
 
-            immagine = request.form["immagine"]
+       domanda1 = request.form["domanda1"]
 
-            domanda1=request.form["domanda1"],
+       risposte1 = request.form["risposte1"]
 
-            risposte1=request.form["risposte1"],
+       domanda2 = request.form["domanda2"]
 
-            domanda2=request.form["domanda2"],
+       risposte2 = request.form["risposte2"]
 
-            risposte2=request.form["risposte2"],
+       nuovo_match = Match(
 
-            card_id=card_id
-        )
+           nome=nome,
 
-        db.session.add(nuovo_match)
+           immagine=immagine,
 
-        db.session.commit()
-        send_telegram_message(
-        f"🎮 Nuovo match aggiunto!\n\n📌 {nuovo_match.nome}"
-        )
+           domanda1=domanda1,
 
-        return redirect(url_for("home"))
+           risposte1=risposte1,
+
+           domanda2=domanda2,
+
+           risposte2=risposte2,
+
+           card_id=card_id
+       )
+
+       db.session.add(nuovo_match)
+
+       db.session.commit()
+       send_telegram_message(
+           f"🎮 Nuovo match aggiunto!\n\n📌 {nuovo_match.nome}"
+       )
+
+       return redirect(url_for("home"))
 
     return render_template(
         "aggiungi_match.html",
