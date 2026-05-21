@@ -1017,12 +1017,13 @@ with app.app_context():
 
     db.create_all()
 
-with app.app_context():
 
 @app.route(
     "/cambia_password",
     methods=["GET", "POST"]
 )
+
+
 @login_required
 def cambia_password():
 
