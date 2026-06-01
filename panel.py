@@ -615,7 +615,12 @@ def home():
 
     cards = Card.query.all()
 
+    card_attive = []
+
+    card_archivio = []
+
     for card in cards:
+
         try:
 
             chiusura = datetime.strptime(
@@ -628,6 +633,14 @@ def home():
         except:
 
             card.chiusa = False
+
+        if card.chiusa:
+
+            card_archivio.append(card)
+
+        else:
+
+            card_attive.append(card)
 
     classifica_ordinata = User.query.order_by(
         User.punti.desc()
@@ -662,7 +675,8 @@ def home():
 
     return render_template(
         "dashboard.html",
-        cards=cards,
+        card_attive=card_attive,
+        card_archivio=card_archivio,
         classifica=classifica_ordinata,
         totale_cards=totale_cards,
         totale_match=totale_match,
@@ -989,6 +1003,10 @@ def dashboard_user():
     classifica = User.query.order_by(
     User.punti.desc()
     ).all()
+
+    print("ORA SERVER:", datetime.now())
+    print("ATTIVE:", len(card_attive))
+    print("ARCHIVIO:", len(card_archivio))
     
     return render_template(
         "dashboard_user.html",

@@ -511,7 +511,7 @@
 
             </div>
 
-            {% for card in cards %}
+            {% for card in card_attive %}
 
             <div class="card">
 
@@ -667,7 +667,75 @@
 
         </div>
 
+        <!-- CARD ARCHIVIATE -->
+
+        <div class="box">
+
+            <div class="section-title">
+
+                📚 Card Archiviate
+
+            </div>
+
+            {% for card in card_archivio %}
+
+            <div class="card">
+
+                <h3>
+                    {{ card.nome }}
+                </h3>
+
+                <p>
+                    🕒 Apertura:
+                    {{ card.apertura }}
+                </p>
+
+                <p>
+                    🔒 Chiusura:
+                    {{ card.chiusura }}
+                </p>
+
+                <p style="color:crimson;font-weight:bold;">
+
+                    🔒 Evento Archiviato
+
+                </p>
+
+                <div class="actions">
+
+                    <a href="/visualizza_pronostici/{{ card.id }}">
+
+                        <button style="
+                            background:#0066cc;
+                            color:white;
+                        ">
+
+                            👥 Visualizza Pronostici
+
+                        </button>
+
+                    </a>
+
+                    <a href="/modifica_card/{{ card.id }}">
+
+                        <button>
+
+                            ✏️ Modifica Card
+
+                        </button>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
         <!-- GRAFICO -->
+
 
         <div class="box">
 
