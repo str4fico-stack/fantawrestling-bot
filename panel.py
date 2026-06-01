@@ -944,7 +944,22 @@ def dashboard_user():
     user = current_user
 
     cards = Card.query.all()
-    
+
+    for card in cards:
+
+        try:
+
+            chiusura = datetime.strptime(
+                card.chiusura,
+                "%d/%m/%Y %H:%M"
+            )
+
+            card.chiusa = datetime.now() >= chiusura
+
+        except:
+
+            card.chiusa = False
+            
     classifica = User.query.order_by(
     User.punti.desc()
     ).all()
