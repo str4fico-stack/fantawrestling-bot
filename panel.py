@@ -615,6 +615,20 @@ def home():
 
     cards = Card.query.all()
 
+for card in cards:
+    try:
+
+        chiusura = datetime.strptime(
+            card.chiusura,
+            "%d/%m/%Y %H:%M"
+        )
+
+        card.chiusa = datetime.now() >= chiusura
+
+    except:
+
+        card.chiusa = False
+
     classifica_ordinata = User.query.order_by(
         User.punti.desc()
     ).all()

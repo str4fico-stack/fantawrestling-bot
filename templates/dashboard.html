@@ -527,7 +527,25 @@
                 <p>
                     🔒 Chiusura:
                     {{ card.chiusura }}
+
+                    {% if card.chiusa %}
+
+                <p style="color:crimson;font-weight:bold;">
+
+                    🔒 Pronostici Chiusi
+
                 </p>
+
+                {% else %}
+
+                <p style="color:limegreen;font-weight:bold;">
+
+                    🟢 Pronostici Aperti
+
+                </p>
+
+                {% endif %}
+
 
                 <p>
                     🎮 Match:
