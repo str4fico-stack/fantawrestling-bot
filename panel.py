@@ -945,6 +945,10 @@ def dashboard_user():
 
     cards = Card.query.all()
 
+    card_attive = []
+
+    card_archivio = []
+
     for card in cards:
 
         try:
@@ -959,7 +963,15 @@ def dashboard_user():
         except:
 
             card.chiusa = False
-            
+
+        if card.chiusa:
+
+            card_archivio.append(card)
+
+        else:
+
+            card_attive.append(card)
+
     classifica = User.query.order_by(
     User.punti.desc()
     ).all()
@@ -967,7 +979,8 @@ def dashboard_user():
     return render_template(
         "dashboard_user.html",
         user=user,
-        cards=cards,
+        card_attive=card_attive,
+        card_archivio=card_archivio,
         classifica=classifica
     )
 

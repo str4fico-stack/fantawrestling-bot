@@ -283,7 +283,7 @@ Dashboard Giocatore
         🏆 Eventi Attivi
     </h2>
 
-    {% for card in cards %}
+    {% for card in card_attive %}
 
     <div class="card-box">
 
@@ -350,6 +350,40 @@ Dashboard Giocatore
             🏆 {{ player.punti }} pt
 
         </span>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<!-- ARCHIVIO EVENTI -->
+
+<div class="section">
+
+    <h2>
+        📚 Archivio Eventi
+    </h2>
+
+    {% for card in card_archivio %}
+
+    <div class="card-box">
+
+        <h3>
+            {{ card.nome }}
+        </h3>
+
+        <p>
+
+            🔒 Evento concluso
+
+        </p>
+
+        <a href="/mia_card/{{ card.id }}" class="play-btn">
+
+            👁 VISUALIZZA
+
+        </a>
 
     </div>
 
