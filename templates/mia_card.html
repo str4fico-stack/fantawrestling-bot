@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ card.nome }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+
+        max-width: 1000px;
+
+        margin: auto;
+    }
+
+    .title {
+
+        color: gold;
+
+        font-size: 36px;
+
+        margin-bottom: 30px;
+    }
+
+    .card-box {
+
+        background:
+            linear-gradient(135deg,
+                #1e1e1e,
+                #292929);
+
+        padding: 25px;
+
+        border-radius: 20px;
+
+        margin-bottom: 20px;
+
+        border: 1px solid #333;
+    }
+
+    .match-name {
+
+        font-size: 24px;
+
+        color: white;
+
+        font-weight: bold;
+
+        margin-bottom: 20px;
+    }
+
+    .info {
+
+        color: #ddd;
+
+        margin-bottom: 12px;
+
+        line-height: 1.6;
+    }
+
+    .points {
+
+        color: gold;
+
+        font-weight: bold;
+
+        margin-top: 15px;
+    }
+
+    .bonus {
+
+        display: inline-block;
+
+        margin-top: 15px;
+
+        background: gold;
+
+        color: black;
+
+        padding: 8px 14px;
+
+        border-radius: 10px;
+
+        font-weight: bold;
+    }
+
+    .back {
+
+        display: inline-block;
+
+        margin-bottom: 25px;
+
+        padding: 10px 15px;
+
+        background: #333;
+
+        color: white;
+
+        text-decoration: none;
+
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container">
+
+    <a href="/profilo" class="back">
+
+        ← Torna al Profilo
+
+    </a>
+
+    <div class="title">
+
+        📋 {{ card.nome }}
+
+    </div>
+
+    {% for item in pronostici %}
+
+    <div class="card-box">
+
+        <div class="match-name">
+
+            🎮 {{ item.match.nome }}
+
+        </div>
+
+        <div class="info">
+
+            <strong>
+                ❓ {{ item.match.domanda1 }}
+            </strong>
+
+            <br>
+
+            ✅ {{ item.pronostico.risposta1 }}
+
+        </div>
+
+        {% if item.match.domanda2 %}
+
+        <div class="info">
+
+            <strong>
+                ❓ {{ item.match.domanda2 }}
+            </strong>
+
+            <br>
+
+            ✅ {{ item.pronostico.risposta2 }}
+
+        </div>
+
+        {% endif %}
+
+        <div class="points">
+
+            🏆 {{ item.pronostico.punti }} punti
+
+        </div>
+
+        {% if item.pronostico.bonus %}
+
+        <div class="bonus">
+
+            ⭐ BONUS MATCH
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

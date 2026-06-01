@@ -403,6 +403,53 @@ Profilo
 
     <div class="section-title">
 
+        📚 Le Mie Card
+
+    </div>
+
+    <div class="pronostici-grid">
+
+        {% for item in cards_utente %}
+
+        <div class="pronostico-box">
+
+            <div class="match-name">
+
+                📋 {{ item.card.nome }}
+
+            </div>
+
+            <div class="info">
+
+                🎮 Pronostici:
+                {{ item.pronostici }}
+
+            </div>
+
+            <div class="points">
+
+                🏆 {{ item.punti }} punti
+
+            </div>
+
+            <a href="/mia_card/{{ item.card.id }}">
+
+                <div class="bonus">
+
+                    👁 VISUALIZZA
+
+                </div>
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="section-title">
+
         📋 Storico Pronostici
 
     </div>

@@ -96,15 +96,20 @@
 
     </h1>
 
-    {% for p in dati %}
+    {% for username, dati_utente in utenti.items() %}
 
     <div class="card">
 
         <div class="user">
 
-            👤 {{ p.utente }}
+            👤 {{ username }}
+
+            <br>
+
+            🏆 Totale punti card: {{ dati_utente.punti }}
 
         </div>
+        {% for p in dati_utente.pronostici %}
 
         <div class="line">
 
@@ -153,6 +158,12 @@
             {{ p.punti }}
 
         </div>
+
+        <div style="height:15px;"></div>
+
+        <hr>
+
+        {% endfor %}
 
     </div>
 

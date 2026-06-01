@@ -464,11 +464,31 @@ def profilo():
             1
         )
 
+    cards_utente = {}
+
+    for p in pronostici:
+
+        card = p.match.card
+
+        if card.id not in cards_utente:
+
+            cards_utente[card.id] = {
+                "card": card,
+                "punti": 0,
+                "pronostici": 0
+            }
+
+        cards_utente[card.id]["punti"] += p.punti
+        cards_utente[card.id]["pronostici"] += 1
+
+
     return render_template(
 
         "profilo.html",
 
         pronostici=pronostici,
+
+        cards_utente=list(cards_utente.values()),
 
         totale_pronostici=totale_pronostici,
 
@@ -1143,9 +1163,12 @@ with app.app_context():
 @admin_required
 def visualizza_pronostici(card_id):
 
-    card = Card.query.get_or_404(card_id)
+    card = Card.query.get(card_id)
 
-    dati = []
+    if not card:
+        return "Card non trovata"
+
+    utenti = {}
 
     for match in card.match:
 
@@ -1155,9 +1178,21 @@ def visualizza_pronostici(card_id):
                 pronostico.user_id
             )
 
-            dati.append({
+            if utente.username not in utenti:
 
-                "utente": utente.username,
+                utenti[utente.username] = {
+
+                    "punti": 0,
+
+                    "pronostici": []
+
+                }
+
+            utenti[utente.username]["punti"] += (
+                pronostico.punti
+            )
+
+            utenti[utente.username]["pronostici"].append({
 
                 "match": match.nome,
 
@@ -1181,8 +1216,37 @@ def visualizza_pronostici(card_id):
 
         card=card,
 
-        dati=dati
+        utenti=utenti
 
+    )
+
+
+@app.route("/mia_card/<int:card_id>")
+@login_required
+def mia_card(card_id):
+
+    card = Card.query.get_or_404(card_id)
+
+    pronostici = []
+
+    for match in card.match:
+
+        pronostico = Pronostico.query.filter_by(
+            user_id=current_user.id,
+            match_id=match.id
+        ).first()
+
+        if pronostico:
+
+            pronostici.append({
+                "match": match,
+                "pronostico": pronostico
+            })
+
+    return render_template(
+        "mia_card.html",
+        card=card,
+        pronostici=pronostici
     )
 
 @login_required
