@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="it">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Pronostici Utenti</title>
+
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial;
+            padding: 30px;
+        }
+
+        h1 {
+            color: gold;
+            margin-bottom: 30px;
+        }
+
+        .card {
+
+            background: #1f1f1f;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            margin-bottom: 20px;
+
+            border: 1px solid #333;
+        }
+
+        .user {
+
+            color: gold;
+
+            font-size: 22px;
+
+            margin-bottom: 15px;
+        }
+
+        .line {
+
+            margin-bottom: 8px;
+        }
+
+        .bonus {
+
+            color: gold;
+
+            font-weight: bold;
+        }
+
+        .points {
+
+            color: crimson;
+
+            font-weight: bold;
+        }
+
+        .back {
+
+            display: inline-block;
+
+            margin-bottom: 30px;
+
+            color: white;
+
+            text-decoration: none;
+
+            background: #333;
+
+            padding: 10px 15px;
+
+            border-radius: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <a href="/dashboard" class="back">
+
+        ← Torna Dashboard
+
+    </a>
+
+    <h1>
+
+        👥 Pronostici - {{ card.nome }}
+
+    </h1>
+
+    {% for p in dati %}
+
+    <div class="card">
+
+        <div class="user">
+
+            👤 {{ p.utente }}
+
+        </div>
+
+        <div class="line">
+
+            🎮 {{ p.match }}
+
+        </div>
+
+        <div class="line">
+
+            ❓ {{ p.domanda1 }}
+
+        </div>
+
+        <div class="line">
+
+            ✅ {{ p.risposta1 }}
+
+        </div>
+
+        {% if p.domanda2 %}
+
+        <div class="line">
+
+            ❓ {{ p.domanda2 }}
+
+        </div>
+
+        <div class="line">
+
+            ✅ {{ p.risposta2 }}
+
+        </div>
+
+        {% endif %}
+
+        <div class="line bonus">
+
+            ⭐ Bonus:
+            {{ "SI" if p.bonus else "NO" }}
+
+        </div>
+
+        <div class="line points">
+
+            🏆 Punti:
+            {{ p.punti }}
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</body>
+
+</html>

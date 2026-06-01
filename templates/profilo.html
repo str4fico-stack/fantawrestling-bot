@@ -423,20 +423,36 @@ Profilo
 
             <div class="info">
 
-                <strong>Risposta 1:</strong>
-                {{ pronostico.risposta1 }}
+                <strong>📋 Card:</strong>
+                {{ pronostico.match.card.nome }}
 
             </div>
 
             <div class="info">
 
-                <strong>Risposta 2:</strong>
-                {{ pronostico.risposta2 }}
+                <strong>❓ {{ pronostico.match.domanda1 }}</strong>
+
+                <br>
+
+                ✅ {{ pronostico.risposta1 }}
 
             </div>
 
-            <div class="points">
+            {% if pronostico.match.domanda2 %}
 
+            <div class="info">
+
+                <strong>❓ {{ pronostico.match.domanda2 }}</strong>
+
+                <br>
+
+                ✅ {{ pronostico.risposta2 }}
+
+            </div>
+
+            {% endif %}
+
+            <div class="points">
                 🏆 {{ pronostico.punti }} punti
 
             </div>

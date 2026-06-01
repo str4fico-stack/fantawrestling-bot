@@ -560,6 +560,33 @@
 
                     </a>
 
+                    <a href="/chiudi_pronostici/{{ card.id }}"
+                        onclick="return confirm('Chiudere definitivamente i pronostici?')">
+
+                        <button style="
+                            background:#ff8800;
+                            color:white;
+                        ">
+
+                            ⏰ Chiudi Pronostici
+
+                        </button>
+
+                    </a>
+
+                    <a href="/visualizza_pronostici/{{ card.id }}">
+
+                        <button style="
+                            background:#0066cc;
+                            color:white;
+                        ">
+
+                            👥 Visualizza Pronostici
+
+                        </button>
+
+                    </a>
+
                 </div>
 
                 {% for match in card.match %}

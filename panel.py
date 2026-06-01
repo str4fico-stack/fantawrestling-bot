@@ -707,6 +707,35 @@ def crea_card():
 
     return render_template("crea_card.html")
 
+@app.route("/chiudi_pronostici/<card_id>")
+@login_required
+@admin_required
+def chiudi_pronostici(card_id):
+
+    card = Card.query.get(card_id)
+
+    if not card:
+
+        flash("❌ Card non trovata")
+
+        return redirect(
+            url_for("home")
+        )
+
+    card.chiusura = datetime.now().strftime(
+        "%d/%m/%Y %H:%M"
+    )
+
+    db.session.commit()
+
+    flash(
+        "🔒 Pronostici chiusi con successo"
+    )
+
+    return redirect(
+        url_for("home")
+    )
+
 
 @app.route("/aggiungi_match/<int:card_id>", methods=["GET", "POST"])
 @login_required
@@ -952,6 +981,18 @@ def pronostici(card_id):
 
         return "Formato data card non valido"
 
+    # 🔒 BLOCCO PRONOSTICI DOPO LA CHIUSURA
+
+    if datetime.now() >= chiusura:
+
+        flash(
+            "🔒 I pronostici per questa card sono chiusi."
+        )
+
+        return redirect(
+            url_for("dashboard_user")
+        )
+
     if request.method == "POST":
 
         bonus_match = request.form.get(
@@ -1008,7 +1049,9 @@ def pronostici(card_id):
 
         db.session.commit()
 
-        flash("✅ Pronostici salvati!")
+        flash(
+            "✅ Pronostici salvati!"
+        )
 
         return redirect(
             url_for("dashboard_user")
@@ -1095,6 +1138,52 @@ with app.app_context():
     methods=["GET", "POST"]
 )
 
+@app.route("/visualizza_pronostici/<int:card_id>")
+@login_required
+@admin_required
+def visualizza_pronostici(card_id):
+
+    card = Card.query.get_or_404(card_id)
+
+    dati = []
+
+    for match in card.match:
+
+        for pronostico in match.pronostici:
+
+            utente = User.query.get(
+                pronostico.user_id
+            )
+
+            dati.append({
+
+                "utente": utente.username,
+
+                "match": match.nome,
+
+                "domanda1": match.domanda1,
+
+                "risposta1": pronostico.risposta1,
+
+                "domanda2": match.domanda2,
+
+                "risposta2": pronostico.risposta2,
+
+                "bonus": pronostico.bonus,
+
+                "punti": pronostico.punti
+
+            })
+
+    return render_template(
+
+        "visualizza_pronostici.html",
+
+        card=card,
+
+        dati=dati
+
+    )
 
 @login_required
 def cambia_password():
